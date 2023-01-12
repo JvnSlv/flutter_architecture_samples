@@ -7,13 +7,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  rxdart: ^0.27.7
+  shared_preferences: ^2.0.15
   todos_repository_core:
     path: ../todos_repository_core
-  rxdart: ^0.27.7
-  key_value_store:
 
 dev_dependencies:
-  test:
   flutter_test:
     sdk: flutter
-  mockito:
+  mockito: null
+  test: null
