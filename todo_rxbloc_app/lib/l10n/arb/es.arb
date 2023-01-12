@@ -1,0 +1,9 @@
+{
+    "@@locale": "es",
+    "reload": "Reload",
+    "ok" : "OK",
+    "close" : "Close",
+    "resetPassword" : "Reset password",
+    "todoList":"List",
+    "stats":"Stats"
+}

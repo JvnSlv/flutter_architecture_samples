@@ -1,0 +1,4 @@
+enum NavigationEnum {
+  todosList,
+  stats,
+}

@@ -1,0 +1,8 @@
+{
+  "@@locale": "es",
+  "todosListAppBarTitle": "List of Todos",
+  "@todosListAppBarTitle": {
+    "description": "List of Todos"
+  },
+  "listOfTodos":"List of Todos"
+}
