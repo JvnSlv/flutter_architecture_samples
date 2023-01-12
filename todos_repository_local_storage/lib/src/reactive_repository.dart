@@ -2,10 +2,8 @@
 // Use of this source code is governed by the MIT license that can be found
 // in the LICENSE file.
 
-import 'dart:async';
 import 'dart:core';
 
-import 'package:meta/meta.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:todos_repository_core/todos_repository_core.dart';
 
@@ -17,8 +15,8 @@ class ReactiveLocalStorageRepository implements ReactiveTodosRepository {
   bool _loaded = false;
 
   ReactiveLocalStorageRepository({
-    @required TodosRepository repository,
-    List<TodoEntity> seedValue,
+    required TodosRepository repository,
+    required List<TodoEntity> seedValue,
   })  : _repository = repository,
         _subject = seedValue != null
             ? BehaviorSubject<List<TodoEntity>>.seeded(seedValue)
