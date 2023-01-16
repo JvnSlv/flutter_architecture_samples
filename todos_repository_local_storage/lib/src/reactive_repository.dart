@@ -18,9 +18,7 @@ class ReactiveLocalStorageRepository implements ReactiveTodosRepository {
     required TodosRepository repository,
     required List<TodoEntity> seedValue,
   })  : _repository = repository,
-        _subject = seedValue != null
-            ? BehaviorSubject<List<TodoEntity>>.seeded(seedValue)
-            : BehaviorSubject<List<TodoEntity>>();
+        _subject = BehaviorSubject<List<TodoEntity>>.seeded(seedValue);
 
   @override
   Future<void> addNewTodo(TodoEntity todo) async {
@@ -55,7 +53,7 @@ class ReactiveLocalStorageRepository implements ReactiveTodosRepository {
 
     _repository.loadTodos().then((entities) {
       _subject.add(List<TodoEntity>.unmodifiable(
-        [if (_subject.value != null) ..._subject.value, ...entities],
+        [..._subject.value, ...entities],
       ));
     });
   }
