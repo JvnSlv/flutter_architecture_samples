@@ -7,9 +7,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:todos_repository_core/todos_repository_core.dart';
 
+import '../../feature_add_todo/views/add_todo.dart';
 import '../../feature_homepage/views/home_page.dart';
 import '../../feature_stats/views/stats_page.dart';
+import '../../feature_todo_details/views/todo_details_page.dart';
+import '../../feature_todos_list/di/todos_list_dependecies.dart';
 import '../../feature_todos_list/views/todos_list_page.dart';
 import '../utils/constants.dart';
 
@@ -27,8 +32,27 @@ final GoRouter goRouter = GoRouter(
       navigatorKey: _shellNavigatorKey,
       builder: (BuildContext context, GoRouterState state, Widget child) =>
           HomePage(child: child),
-      routes: $appRoutes,
-    )
+      routes: $appRoutes
+          .where(
+            (element) => (element.path == TodoConstants.listRoute ||
+                element.path == TodoConstants.statsRoute),
+          )
+          .toList(),
+    ),
+    GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
+      path: TodoConstants.addTodoRoute,
+      builder: (BuildContext context, GoRouterState state) =>
+          const AddTodoPage(),
+    ),
+    GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
+      path: TodoConstants.todoDetails,
+      builder: (BuildContext context, GoRouterState state) => TodoDetailsPage(
+        id: state.params['id']!,
+        todo: state.extra as TodoEntity,
+      ),
+    ),
   ],
 );
 
@@ -40,7 +64,12 @@ class TodoListRoute extends GoRouteData {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      const NoTransitionPage(child: TodosListPage());
+      NoTransitionPage(
+        child: MultiProvider(
+          providers: TodosListDependecies.of(context).providers,
+          child: const TodosListPage(),
+        ),
+      );
 }
 
 @TypedGoRoute<StatsRoute>(
