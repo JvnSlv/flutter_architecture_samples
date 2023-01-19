@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:todos_repository_core/todos_repository_core.dart';
 
+import '../../feature_add_todo/di/add_todo_dependecies.dart';
 import '../../feature_add_todo/views/add_todo.dart';
 import '../../feature_homepage/views/home_page.dart';
 import '../../feature_stats/views/stats_page.dart';
@@ -40,10 +41,11 @@ final GoRouter goRouter = GoRouter(
           .toList(),
     ),
     GoRoute(
-      parentNavigatorKey: _rootNavigatorKey,
+      //parentNavigatorKey: _rootNavigatorKey,
       path: TodoConstants.addTodoRoute,
-      builder: (BuildContext context, GoRouterState state) =>
-          const AddTodoPage(),
+      builder: (BuildContext context, GoRouterState state) => MultiProvider(
+          providers: AddTodoDependecies.of(context).providers,
+          child: const AddTodoPage()),
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,

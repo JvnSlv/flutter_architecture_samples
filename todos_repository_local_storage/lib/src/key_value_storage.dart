@@ -24,8 +24,8 @@ class KeyValueStorage implements TodosRepository {
   @override
   Future<List<TodoEntity>> loadTodos() async {
     return codec
-        .decode((await store).getString(key) ?? '{"todos": []}')['todos']
-        .cast<Map<String, Object>>()
+        .decode((await store).getString(key)! ?? "{'todos': []}")['todos']
+        .cast<Map<String, dynamic>>()
         .map<TodoEntity>(TodoEntity.fromJson)
         .toList(growable: false);
   }

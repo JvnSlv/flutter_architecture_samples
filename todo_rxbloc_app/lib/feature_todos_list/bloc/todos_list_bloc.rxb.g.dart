@@ -38,6 +38,14 @@ abstract class $TodosListBloc extends RxBlocBase
   late final Stream<Result<List<TodoEntity>>> _todosListState =
       _mapToTodosListState();
 
+  /// The state of [isTodoAdded] implemented in [_mapToIsTodoAddedState]
+  late final ConnectableStream<void> _isTodoAddedState =
+      _mapToIsTodoAddedState();
+
+  /// The state of [updatedTodo] implemented in [_mapToUpdatedTodoState]
+  late final ConnectableStream<void> _updatedTodoState =
+      _mapToUpdatedTodoState();
+
   /// The state of [isTodoDeleted] implemented in [_mapToIsTodoDeletedState]
   late final Stream<TodoEntity> _isTodoDeletedState =
       _mapToIsTodoDeletedState();
@@ -64,12 +72,22 @@ abstract class $TodosListBloc extends RxBlocBase
   Stream<Result<List<TodoEntity>>> get todosList => _todosListState;
 
   @override
+  ConnectableStream<void> get isTodoAdded => _isTodoAddedState;
+
+  @override
+  ConnectableStream<void> get updatedTodo => _updatedTodoState;
+
+  @override
   Stream<TodoEntity> get isTodoDeleted => _isTodoDeletedState;
 
   @override
   Stream<TodoEntity?> get navigate => _navigateState;
 
   Stream<Result<List<TodoEntity>>> _mapToTodosListState();
+
+  ConnectableStream<void> _mapToIsTodoAddedState();
+
+  ConnectableStream<void> _mapToUpdatedTodoState();
 
   Stream<TodoEntity> _mapToIsTodoDeletedState();
 

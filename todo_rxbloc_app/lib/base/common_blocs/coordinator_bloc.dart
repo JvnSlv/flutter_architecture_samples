@@ -8,16 +8,25 @@
 import 'package:rx_bloc/rx_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../model/navigation_parametars.dart';
+
 part 'coordinator_bloc.rxb.g.dart';
 part 'coordinator_bloc_extensions.dart';
 
-abstract class CoordinatorEvents {}
+abstract class CoordinatorEvents {
+  void navigate(NavigationParametars navigationParametars);
+}
 
-abstract class CoordinatorStates {}
+abstract class CoordinatorStates {
+  Stream<NavigationParametars> get navigation;
+}
 
 /// The coordinator bloc manages the communication between blocs.
 ///
 /// The goals is to keep all blocs decoupled from each other
 /// as the entire communication flow goes through this bloc.
 @RxBloc()
-class CoordinatorBloc extends $CoordinatorBloc {}
+class CoordinatorBloc extends $CoordinatorBloc {
+  @override
+  Stream<NavigationParametars> _mapToNavigationState() => _$navigateEvent;
+}

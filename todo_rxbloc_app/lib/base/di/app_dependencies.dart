@@ -10,7 +10,6 @@ import 'package:flutter_rx_bloc/flutter_rx_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:todos_repository_core/todos_repository_core.dart';
 import 'package:todos_repository_local_storage/todos_repository_local_storage.dart';
 
 import '../../feature_homepage/bloc/navigation_bloc.dart';
@@ -70,32 +69,7 @@ class AppDependencies {
         Provider<TodoService>(
             create: (context) => TodoService(
                   ReactiveLocalStorageRepository(
-                    seedValue: [
-                      TodoEntity(
-                        task: 'test 1',
-                        id: '1',
-                        note: 'note 1',
-                        complete: false,
-                      ),
-                      TodoEntity(
-                        task: 'test 2',
-                        id: '2',
-                        note: 'note 2',
-                        complete: true,
-                      ),
-                      TodoEntity(
-                        task: 'test 3',
-                        id: '3',
-                        note: 'note 3',
-                        complete: false,
-                      ),
-                      TodoEntity(
-                        task: 'test 4',
-                        id: '4',
-                        note: 'note 4',
-                        complete: true,
-                      ),
-                    ],
+                    seedValue: [],
                     repository: KeyValueStorage(
                       'todo_rxbloc_app',
                       SharedPreferences.getInstance(),
@@ -110,7 +84,10 @@ class AppDependencies {
 
   List<SingleChildWidget> get _blocs => [
         RxBlocProvider<NavigationBlocType>(
-          create: (context) => NavigationBloc(router: goRouter),
+          create: (context) => NavigationBloc(
+            router: goRouter,
+            coordinatorBloc: context.read(),
+          ),
         ),
       ];
 

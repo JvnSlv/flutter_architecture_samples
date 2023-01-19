@@ -2,9 +2,10 @@ import 'package:rx_bloc/rx_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:todos_repository_core/todos_repository_core.dart';
 
-import '../../app_extensions.dart';
+import '../../base/common_blocs/coordinator_bloc.dart';
+import '../../base/enums/current_page_enum.dart';
+import '../../base/model/navigation_parametars.dart';
 import '../../base/services/todo_service.dart';
-import '../../base/utils/constants.dart';
 
 part 'todos_list_bloc.rxb.g.dart';
 part 'todos_list_bloc_extensions.dart';
@@ -19,6 +20,8 @@ abstract class TodosListBlocEvents {
 
 abstract class TodosListBlocStates {
   Stream<Result<List<TodoEntity>>> get todosList;
+  ConnectableStream<void> get isTodoAdded;
+  ConnectableStream<void> get updatedTodo;
   Stream<TodoEntity> get isTodoDeleted;
   Stream<TodoEntity?> get navigate;
 }
@@ -26,33 +29,24 @@ abstract class TodosListBlocStates {
 @RxBloc()
 class TodosListBloc extends $TodosListBloc {
   TodosListBloc({
-    required this.router,
+    required this.coordinatorBloc,
     required this.todoService,
-  });
+  }) {
+    isTodoAdded.connect().addTo(_compositeSubscription);
+    updatedTodo.connect().addTo(_compositeSubscription);
+  }
+
   final TodoService todoService;
-  final GoRouter router;
-  List<TodoEntity> _todosList = [];
+  final CoordinatorBlocType coordinatorBloc;
 
   @override
-  Stream<Result<List<TodoEntity>>> _mapToTodosListState() {
-    return Rx.merge([
-      _$addTodoEvent.switchMap((value) async* {
-        if (!_todosList.contains(value)) {
-          await todoService.addTodo(value);
-        }
-        yield _todosList;
-      }),
-      _$fetchTodosListEvent.startWith(null).switchMap(
-            (value) => todoService.getTodos().doOnData((event) {
-              _todosList = event;
-            }),
-          ),
-      _$updateTodoEvent.switchMap((value) async* {
-        await todoService.updateTodo(value.copyWith(complete: !value.complete));
-        yield _todosList;
-      }),
-    ]).distinct().shareReplay(maxSize: 1).asResultStream();
-  }
+  Stream<Result<List<TodoEntity>>> _mapToTodosListState() =>
+      _$fetchTodosListEvent
+          .startWith(null)
+          .switchMap((value) => todoService.getTodos())
+          .distinct()
+          .asResultStream()
+          .setResultStateHandler(this);
 
   @override
   Stream<TodoEntity> _mapToIsTodoDeletedState() =>
@@ -65,9 +59,26 @@ class TodosListBloc extends $TodosListBloc {
   Stream<TodoEntity?> _mapToNavigateState() =>
       _$navigateToPageEvent.doOnData((event) {
         if (event == null) {
-          router.push(TodoConstants.addTodoRoute);
+          coordinatorBloc.events.navigate(const NavigationParametars(
+            navigationEnum: NavigationEnum.addTodo,
+          ));
         } else {
-          router.push(TodoConstants.todoDetails, extra: event);
+          coordinatorBloc.events.navigate(NavigationParametars(
+            navigationEnum: NavigationEnum.todoDetails,
+            extraParametars: event,
+          ));
         }
       });
+
+  @override
+  ConnectableStream<void> _mapToIsTodoAddedState() => _$addTodoEvent
+      .switchMap((value) => todoService.addTodo(value).asResultStream())
+      .publish();
+
+  @override
+  ConnectableStream<void> _mapToUpdatedTodoState() => _$updateTodoEvent
+      .switchMap((value) => todoService
+          .updateTodo(value.copyWith(complete: !value.complete))
+          .asResultStream())
+      .publish();
 }
