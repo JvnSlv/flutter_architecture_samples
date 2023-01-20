@@ -10,7 +10,6 @@ import 'package:flutter_rx_bloc/flutter_rx_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:todos_repository_core/todos_repository_core.dart';
 import 'package:todos_repository_local_storage/todos_repository_local_storage.dart';
 
 import '../../feature_homepage/bloc/navigation_bloc.dart';
@@ -18,6 +17,8 @@ import '../app/config/environment_config.dart';
 import '../common_blocs/coordinator_bloc.dart';
 import '../routers/router.dart';
 import '../services/todo_service.dart';
+import '../utils/constants.dart';
+import '../utils/todos_data.dart';
 
 class AppDependencies {
   AppDependencies._(this.context, this.config);
@@ -70,34 +71,9 @@ class AppDependencies {
         Provider<TodoService>(
             create: (context) => TodoService(
                   ReactiveLocalStorageRepository(
-                    seedValue: [
-                      TodoEntity(
-                        task: 'test 1',
-                        id: '1',
-                        note: 'note 1',
-                        complete: false,
-                      ),
-                      TodoEntity(
-                        task: 'test 2',
-                        id: '2',
-                        note: 'note 2',
-                        complete: true,
-                      ),
-                      TodoEntity(
-                        task: 'test 3',
-                        id: '3',
-                        note: 'note 3',
-                        complete: false,
-                      ),
-                      TodoEntity(
-                        task: 'test 4',
-                        id: '4',
-                        note: 'note 4',
-                        complete: true,
-                      ),
-                    ],
+                    seedValue: listOfTods,
                     repository: KeyValueStorage(
-                      'todo_rxbloc_app',
+                      TodoConstants.keyValueStorageKey,
                       SharedPreferences.getInstance(),
                     ),
                   ),

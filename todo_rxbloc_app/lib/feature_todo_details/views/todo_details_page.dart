@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:todos_repository_core/todos_repository_core.dart';
 
 class TodoDetailsPage extends StatelessWidget {
-  const TodoDetailsPage({super.key, this.todo, required this.id});
-  final TodoEntity? todo;
+  const TodoDetailsPage({super.key, required this.todo, required this.id});
+  final TodoEntity todo;
   final String id;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Center(child: Text(todo?.id ?? '0')),
+      body: Center(child: Text(todo.id)),
     );
   }
 }

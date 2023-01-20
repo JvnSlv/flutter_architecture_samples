@@ -19,22 +19,21 @@ abstract class $NavigationBloc extends RxBlocBase
     implements NavigationBlocEvents, NavigationBlocStates, NavigationBlocType {
   final _compositeSubscription = CompositeSubscription();
 
-  /// Тhe [Subject] where events sink to by calling [setPageIndex]
-  final _$setPageIndexEvent =
-      BehaviorSubject<NavigationEnum>.seeded(NavigationEnum.todosList);
+  /// Тhe [Subject] where events sink to by calling [navigate]
+  final _$navigateEvent = PublishSubject<NavigationParametars>();
 
   /// The state of [getPageIndex] implemented in [_mapToGetPageIndexState]
-  late final Stream<NavigationEnum> _getPageIndexState =
+  late final Stream<NavigationParametars> _getPageIndexState =
       _mapToGetPageIndexState();
 
   @override
-  void setPageIndex(NavigationEnum currentPage) =>
-      _$setPageIndexEvent.add(currentPage);
+  void navigate(NavigationParametars navigationParametars) =>
+      _$navigateEvent.add(navigationParametars);
 
   @override
-  Stream<NavigationEnum> get getPageIndex => _getPageIndexState;
+  Stream<NavigationParametars> get getPageIndex => _getPageIndexState;
 
-  Stream<NavigationEnum> _mapToGetPageIndexState();
+  Stream<NavigationParametars> _mapToGetPageIndexState();
 
   @override
   NavigationBlocEvents get events => this;
@@ -44,7 +43,7 @@ abstract class $NavigationBloc extends RxBlocBase
 
   @override
   void dispose() {
-    _$setPageIndexEvent.close();
+    _$navigateEvent.close();
     _compositeSubscription.dispose();
     super.dispose();
   }

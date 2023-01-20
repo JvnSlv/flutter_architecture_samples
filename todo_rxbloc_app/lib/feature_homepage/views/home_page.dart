@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../app_extensions.dart';
 import '../../base/enums/current_page_enum.dart';
+import '../../base/models/navigation_parametars.dart';
 import '../bloc/navigation_bloc.dart';
 
 class HomePage extends StatelessWidget {
@@ -16,28 +17,31 @@ class HomePage extends StatelessWidget {
   void _onTap(BuildContext context, int pageIndex) {
     switch (pageIndex) {
       case 0:
-        context
-            .read<NavigationBlocType>()
-            .events
-            .setPageIndex(NavigationEnum.todosList);
+        context.read<NavigationBlocType>().events.navigate(
+            const NavigationParametars(
+                navigationEnum: NavigationEnum.todosList));
         break;
       case 1:
-        context
-            .read<NavigationBlocType>()
-            .events
-            .setPageIndex(NavigationEnum.stats);
+        context.read<NavigationBlocType>().events.navigate(
+              const NavigationParametars(navigationEnum: NavigationEnum.stats),
+            );
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) =>
-      RxBlocBuilder<NavigationBlocType, NavigationEnum>(
+      RxBlocBuilder<NavigationBlocType, NavigationParametars>(
         state: (bloc) => bloc.states.getPageIndex,
         builder: (context, snapshot, bloc) => Scaffold(
           body: child,
           bottomNavigationBar: BottomNavigationBar(
-            currentIndex: (snapshot.data ?? NavigationEnum.todosList).index,
+            currentIndex: (snapshot.hasData
+                    ? snapshot.data!.navigationEnum.index > 1
+                        ? NavigationEnum.todosList
+                        : snapshot.data!.navigationEnum
+                    : NavigationEnum.todosList)
+                .index,
             selectedItemColor: Theme.of(context).colorScheme.secondary,
             onTap: (pageIndex) => _onTap(context, pageIndex),
             iconSize: context.designSystem.typography.navIconSize,
