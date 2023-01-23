@@ -3,8 +3,8 @@ import 'package:flutter_rx_bloc/flutter_rx_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../../app_extensions.dart';
-import '../../base/enums/new_todo_enum.dart';
 import '../bloc/add_todo_bloc.dart';
+import '../components/add_todo_toast_message.dart';
 
 class AddTodoPage extends StatefulWidget {
   const AddTodoPage({super.key});
@@ -65,22 +65,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
             ],
           ),
         ),
-        floatingActionButton: RxBlocListener<AddTodoBlocType, NewTodoEnum>(
-          state: (bloc) => bloc.states.newTodo,
-          listener: (context, state) {
-            if (state == NewTodoEnum.newTodoSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(context.l10n.featureAddTodo.todoCreatedSuccess),
-                ),
-              );
-            } else if (state == NewTodoEnum.newTodoError) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(
-                context.l10n.featureAddTodo.todoCreatedError,
-              )));
-            }
-          },
+        floatingActionButton: AddTodoToastMessage(
           child: FloatingActionButton(
             child: const Icon(Icons.add),
             onPressed: () => context.read<AddTodoBlocType>().events.saveTodo(),

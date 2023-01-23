@@ -21,5 +21,5 @@ extension _AddTodoExtension on Stream {
           ));
           yield NewTodoEnum.newTodoSuccess;
         }
-      });
+      }).defaultIfEmpty(NewTodoEnum.newTodoSuccess);
 }

@@ -20,7 +20,7 @@ abstract class $AddTodoBloc extends RxBlocBase
   final _compositeSubscription = CompositeSubscription();
 
   /// Тhe [Subject] where events sink to by calling [setTitle]
-  final _$setTitleEvent = BehaviorSubject<String>.seeded('');
+  final _$setTitleEvent = BehaviorSubject<String>();
 
   /// Тhe [Subject] where events sink to by calling [setDescription]
   final _$setDescriptionEvent = BehaviorSubject<String>.seeded('');

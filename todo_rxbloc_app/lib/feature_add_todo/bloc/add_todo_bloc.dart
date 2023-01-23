@@ -15,7 +15,7 @@ part 'add_todo_bloc_extensions.dart';
 
 /// A contract class containing all events of the AddTodoBloC.
 abstract class AddTodoBlocEvents {
-  @RxBlocEvent(type: RxBlocEventType.behaviour, seed: '')
+  @RxBlocEvent(type: RxBlocEventType.behaviour)
   void setTitle(String title);
   @RxBlocEvent(type: RxBlocEventType.behaviour, seed: '')
   void setDescription(String description);
