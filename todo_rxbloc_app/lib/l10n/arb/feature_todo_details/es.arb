@@ -4,8 +4,5 @@
   "@statsAppBarTitle": {
     "description": "Stats"
   },
-  "stats":"Stats",
-  "completedTodos":"Completed Todos",
-  "activeTodos":"Active Todos",
-  "error":"Error"
+  "stats":"Stats"
 }
