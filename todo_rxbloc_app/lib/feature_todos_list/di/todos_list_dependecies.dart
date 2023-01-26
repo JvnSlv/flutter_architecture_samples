@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import '../bloc/todos_list_bloc.dart';
+import '../bloc/todos_list_manage_bloc.dart';
 
 class TodosListDependecies {
   TodosListDependecies._(this.context);
@@ -26,6 +27,10 @@ class TodosListDependecies {
         todoService: context.read(),
         navigationBloc: context.read(),
       ),
-    )
+    ),
+    RxBlocProvider<TodosListManageBlocType>(
+        create: (context) => TodosListManageBloc(
+              todoService: context.read(),
+            )),
   ];
 }

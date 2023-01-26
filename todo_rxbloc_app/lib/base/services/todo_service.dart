@@ -6,9 +6,8 @@ class TodoService {
 
   Stream<List<TodoEntity>> getTodos() => _repository.todos();
 
-  Future<void> updateTodo(TodoEntity todoEntity) {
-    return _repository.updateTodo(todoEntity);
-  }
+  Future<void> updateTodo(TodoEntity todoEntity) =>
+      _repository.updateTodo(todoEntity);
 
   Future<void> delteTodo(TodoEntity todoEntity) =>
       _repository.deleteTodo([todoEntity.id]);

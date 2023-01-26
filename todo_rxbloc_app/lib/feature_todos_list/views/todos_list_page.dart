@@ -7,18 +7,14 @@ import '../../app_extensions.dart';
 import '../../base/enums/current_page_enum.dart';
 import '../../base/models/navigation_parametars.dart';
 import '../bloc/todos_list_bloc.dart';
-import '../components/delete_success_toast.dart';
+import '../bloc/todos_list_manage_bloc.dart';
 import '../components/todo_list_tile.dart';
 
 class TodosListPage extends StatelessWidget {
   const TodosListPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return RxBlocListener<TodosListBlocType, NavigationParametars>(
-      state: (bloc) => bloc.states.navigate,
-      listener: (context, state) => state,
-      child: DeleteSuccessToast(
+  Widget build(BuildContext context) => _buildDeleteToastMessage(
         child: Scaffold(
           appBar: AppBar(
             title: Text(context.l10n.featureTodosList.todosListAppBarTitle),
@@ -41,10 +37,14 @@ class TodosListPage extends StatelessWidget {
                   navigationEnum: NavigationEnum.todoDetails,
                   extraParametars: snapshot[index],
                 )),
-                onChanged: (_) => bloc.events.updateTodo(snapshot[index]),
-                onDismissed: (direciton) => bloc.events.deleteTodo(
-                  snapshot[index],
-                ),
+                onChanged: (_) => context
+                    .read<TodosListManageBlocType>()
+                    .events
+                    .updateTodo(snapshot[index]),
+                onDismissed: (direciton) =>
+                    context.read<TodosListManageBlocType>().events.deleteTodo(
+                          snapshot[index],
+                        ),
               ),
             ),
           ),
@@ -57,7 +57,34 @@ class TodosListPage extends StatelessWidget {
                     navigationEnum: NavigationEnum.addTodo)),
           ),
         ),
-      ),
-    );
-  }
+      );
 }
+
+Widget _buildDeleteToastMessage({required Widget child}) =>
+    RxBlocListener<TodosListManageBlocType, TodoEntity>(
+      state: (bloc) => bloc.states.todoDeleted,
+      listener: (context, todo) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                    '${todo.task}  ${context.l10n.featureTodosList.successDelete}'),
+                GestureDetector(
+                  onTap: () {
+                    context
+                        .read<TodosListManageBlocType>()
+                        .events
+                        .addTodo(todo);
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  },
+                  child: Text(context.l10n.featureTodosList.undo),
+                )
+              ],
+            ),
+          ),
+        );
+      },
+      child: child,
+    );

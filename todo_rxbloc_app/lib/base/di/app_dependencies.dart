@@ -69,15 +69,16 @@ class AppDependencies {
 
   List<Provider> get _dataSources => [
         Provider<TodoService>(
-            create: (context) => TodoService(
-                  ReactiveLocalStorageRepository(
-                    seedValue: listOfTods,
-                    repository: KeyValueStorage(
-                      TodoConstants.keyValueStorageKey,
-                      SharedPreferences.getInstance(),
-                    ),
-                  ),
-                ))
+          create: (context) => TodoService(
+            ReactiveLocalStorageRepository(
+              seedValue: listOfTods,
+              repository: KeyValueStorage(
+                TodoConstants.keyValueStorageKey,
+                SharedPreferences.getInstance(),
+              ),
+            ),
+          ),
+        ),
       ];
 
   List<Provider> get _repositories => [];

@@ -11,17 +11,11 @@ part 'todos_list_bloc_extensions.dart';
 
 abstract class TodosListBlocEvents {
   void fetchTodosList();
-  void updateTodo(TodoEntity todo);
-  void deleteTodo(TodoEntity todo);
-  void addTodo(TodoEntity todo);
   void navigateToPage(NavigationParametars navigationParametars);
 }
 
 abstract class TodosListBlocStates {
   Stream<Result<List<TodoEntity>>> get todosList;
-  ConnectableStream<void> get updatedTodo;
-  ConnectableStream<void> get addedTodo;
-  Stream<TodoEntity> get isTodoDeleted;
   Stream<NavigationParametars> get navigate;
 }
 
@@ -30,13 +24,9 @@ class TodosListBloc extends $TodosListBloc {
   TodosListBloc({
     required this.navigationBloc,
     required this.todoService,
-  }) {
-    addedTodo.connect().addTo(_compositeSubscription);
-    updatedTodo.connect().addTo(_compositeSubscription);
-  }
+  });
   final NavigationBlocType navigationBloc;
   final TodoService todoService;
-
   @override
   Stream<Result<List<TodoEntity>>> _mapToTodosListState() =>
       _$fetchTodosListEvent
@@ -49,32 +39,8 @@ class TodosListBloc extends $TodosListBloc {
           .asResultStream();
 
   @override
-  Stream<TodoEntity> _mapToIsTodoDeletedState() =>
-      _$deleteTodoEvent.switchMap((value) async* {
-        await todoService.delteTodo(value);
-        yield value;
-      });
-
-  @override
   Stream<NavigationParametars> _mapToNavigateState() =>
       _$navigateToPageEvent.doOnData((event) {
         navigationBloc.events.navigate(event);
       });
-
-  @override
-  ConnectableStream<void> _mapToUpdatedTodoState() => _$updateTodoEvent
-      .switchMap(
-        (value) => todoService
-            .updateTodo(
-              value.copyWith(complete: !value.complete),
-            )
-            .asResultStream(),
-      )
-      .publish();
-
-  @override
-  ConnectableStream<void> _mapToAddedTodoState() =>
-      _$addTodoEvent.switchMap((value) async* {
-        todoService.addTodo(value).asResultStream();
-      }).publish();
 }
