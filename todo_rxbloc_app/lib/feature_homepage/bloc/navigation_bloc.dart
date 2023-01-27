@@ -1,19 +1,15 @@
 import 'package:rx_bloc/rx_bloc.dart';
 import 'package:rxdart/rxdart.dart';
-
+import 'package:todos_repository_core/todos_repository_core.dart';
 import '../../app_extensions.dart';
-import '../../base/common_blocs/coordinator_bloc.dart';
 import '../../base/enums/current_page_enum.dart';
-import '../../base/model/navigation_parametars.dart';
-import '../../base/utils/constants.dart';
+import '../../base/models/navigation_parametars.dart';
+import '../../base/routers/router.dart';
 
 part 'navigation_bloc.rxb.g.dart';
 
 abstract class NavigationBlocEvents {
-  @RxBlocEvent(
-      type: RxBlocEventType.behaviour,
-      seed: NavigationParametars(navigationEnum: NavigationEnum.todosList))
-  void setPageIndex(NavigationParametars currentPage);
+  void navigate(NavigationParametars navigationParametars);
 }
 
 abstract class NavigationBlocStates {
@@ -22,40 +18,31 @@ abstract class NavigationBlocStates {
 
 @RxBloc()
 class NavigationBloc extends $NavigationBloc {
-  NavigationBloc({required this.coordinatorBloc, required this.router});
+  NavigationBloc({required this.router});
   final GoRouter router;
-  final CoordinatorBlocType coordinatorBloc;
 
   @override
-  Stream<NavigationParametars> _mapToGetPageIndexState() => Rx.merge([
-        _$setPageIndexEvent.doOnData((event) {
-          if (event.navigationEnum == NavigationEnum.todosList) {
-            router.go(TodoConstants.listRoute);
-          } else {
-            router.go(TodoConstants.statsRoute);
-          }
-        }),
-        coordinatorBloc.states.navigation.doOnData((event) {
-          switch (event.navigationEnum) {
-            case NavigationEnum.todosList:
-              router.go(TodoConstants.listRoute);
-              break;
-            case NavigationEnum.stats:
-              router.go(TodoConstants.statsRoute);
-              break;
-            case NavigationEnum.addTodo:
-              router.push(TodoConstants.addTodoRoute);
-              break;
-            case NavigationEnum.todoDetails:
-              router.push(
-                TodoConstants.todoDetails,
-                extra: event.extraParametars,
-              );
-              break;
-            case NavigationEnum.pop:
-              router.pop();
-              break;
-          }
-        })
-      ]);
+  Stream<NavigationParametars> _mapToGetPageIndexState() =>
+      _$navigateEvent.doOnData((event) {
+        switch (event.navigationEnum) {
+          case NavigationEnum.todosList:
+            router.go(const TodoListRoute().location);
+            break;
+          case NavigationEnum.stats:
+            router.go(const StatsRoute().location);
+            break;
+          case NavigationEnum.addTodo:
+            router.push(const AddTodoRoute().location);
+            break;
+          case NavigationEnum.todoDetails:
+            if (event.extraParametars != null) {
+              final TodoEntity todo = event.extraParametars as TodoEntity;
+              router.push(TodoDetailsRoute(todo.id).location, extra: todo);
+            }
+            break;
+          case NavigationEnum.pop:
+            router.pop();
+            break;
+        }
+      });
 }

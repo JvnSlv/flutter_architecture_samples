@@ -6,20 +6,20 @@ extension _AddTodoExtension on Stream {
     Stream<String> setTitle,
     Stream<String> setDescription,
     Uuid uuid,
-    CoordinatorBlocType coordinatorBloc,
+    NavigationBlocType navigationBloc,
   ) =>
-      withLatestFrom2(setTitle, setDescription,
+      withLatestFrom2<String, String, List<String>>(setTitle, setDescription,
               (_, String title, String desc) => [title, desc])
           .switchMap((value) async* {
-        if (value[0].isEmpty) {
-          yield NewTodoEnum.newTodoError;
-        } else {
+        if (value[0].isNotEmpty) {
           await todoService.addTodo(TodoEntity(
               complete: false, id: uuid.v1(), note: value[1], task: value[0]));
-          coordinatorBloc.events.navigate(const NavigationParametars(
+          navigationBloc.events.navigate(const NavigationParametars(
             navigationEnum: NavigationEnum.pop,
           ));
           yield NewTodoEnum.newTodoSuccess;
+        } else {
+          yield NewTodoEnum.newTodoError;
         }
-      }).defaultIfEmpty(NewTodoEnum.newTodoSuccess);
+      });
 }

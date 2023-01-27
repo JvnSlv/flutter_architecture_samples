@@ -4,11 +4,11 @@ import 'package:todos_repository_core/todos_repository_core.dart';
 import 'package:uuid/uuid.dart' as id;
 import 'package:uuid/uuid.dart';
 
-import '../../base/common_blocs/coordinator_bloc.dart';
 import '../../base/enums/current_page_enum.dart';
 import '../../base/enums/new_todo_enum.dart';
-import '../../base/model/navigation_parametars.dart';
+import '../../base/models/navigation_parametars.dart';
 import '../../base/services/todo_service.dart';
+import '../../feature_homepage/bloc/navigation_bloc.dart';
 
 part 'add_todo_bloc.rxb.g.dart';
 part 'add_todo_bloc_extensions.dart';
@@ -31,23 +31,26 @@ abstract class AddTodoBlocStates {
 @RxBloc()
 class AddTodoBloc extends $AddTodoBloc {
   AddTodoBloc({
-    required this.coordinatorBloc,
+    required this.navigationBloc,
     required this.uuid,
     required this.todoService,
   });
   final TodoService todoService;
   final id.Uuid uuid;
-  final CoordinatorBlocType coordinatorBloc;
+  final NavigationBlocType navigationBloc;
 
   @override
-  Stream<String> _mapToValidateTitleState() => _$setTitleEvent.debounceTime(
-        const Duration(milliseconds: 500),
-      );
+  Stream<String> _mapToValidateTitleState() => _$setTitleEvent;
 
   @override
   Stream<NewTodoEnum> _mapToNewTodoState() => _$saveTodoEvent
-      .createTodo(todoService, _$setTitleEvent, _$setDescriptionEvent, uuid,
-          coordinatorBloc)
-      .shareReplay(maxSize: 1)
+      .createTodo(
+        todoService,
+        _$setTitleEvent.startWith(''),
+        _$setDescriptionEvent,
+        uuid,
+        navigationBloc,
+      )
+      .shareReplay()
       .asBroadcastStream();
 }

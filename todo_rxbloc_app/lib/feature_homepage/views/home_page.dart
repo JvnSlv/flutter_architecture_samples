@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../app_extensions.dart';
 import '../../base/enums/current_page_enum.dart';
-import '../../base/model/navigation_parametars.dart';
+import '../../base/models/navigation_parametars.dart';
 import '../bloc/navigation_bloc.dart';
 
 class HomePage extends StatelessWidget {
@@ -17,13 +17,14 @@ class HomePage extends StatelessWidget {
   void _onTap(BuildContext context, int pageIndex) {
     switch (pageIndex) {
       case 0:
-        context.read<NavigationBlocType>().events.setPageIndex(
+        context.read<NavigationBlocType>().events.navigate(
             const NavigationParametars(
                 navigationEnum: NavigationEnum.todosList));
         break;
       case 1:
-        context.read<NavigationBlocType>().events.setPageIndex(
-            const NavigationParametars(navigationEnum: NavigationEnum.stats));
+        context.read<NavigationBlocType>().events.navigate(
+              const NavigationParametars(navigationEnum: NavigationEnum.stats),
+            );
         break;
     }
   }

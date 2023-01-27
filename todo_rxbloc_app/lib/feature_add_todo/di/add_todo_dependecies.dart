@@ -1,10 +1,3 @@
-// Copyright (c) 2022, Prime Holding JSC
-// https://www.primeholding.com
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_rx_bloc/flutter_rx_bloc.dart';
 import 'package:provider/provider.dart';
@@ -16,25 +9,24 @@ import '../bloc/add_todo_bloc.dart';
 class AddTodoDependecies {
   AddTodoDependecies._(this.context);
 
-  factory AddTodoDependecies.of(BuildContext context) => _instance != null
-      ? _instance!
-      : _instance = AddTodoDependecies._(context);
-
-  static AddTodoDependecies? _instance;
+  factory AddTodoDependecies.from(BuildContext context) =>
+      AddTodoDependecies._(context);
 
   final BuildContext context;
 
-  /// List of all providers used throughout the app
-  List<SingleChildWidget> get providers => [
-        ..._blocs,
-      ];
+  late List<SingleChildWidget> providers = [
+    ..._repositories,
+    ..._blocs,
+  ];
+
+  late final List<Provider> _repositories = [];
 
   List<SingleChildWidget> get _blocs => [
         RxBlocProvider<AddTodoBlocType>(
           create: (context) => AddTodoBloc(
             todoService: context.read(),
             uuid: const Uuid(),
-            coordinatorBloc: context.read(),
+            navigationBloc: context.read(),
           ),
         )
       ];

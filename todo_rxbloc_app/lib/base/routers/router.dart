@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:todos_repository_core/todos_repository_core.dart';
-
 import '../../feature_add_todo/di/add_todo_dependecies.dart';
 import '../../feature_add_todo/views/add_todo.dart';
 import '../../feature_homepage/views/home_page.dart';
@@ -33,33 +32,21 @@ final GoRouter goRouter = GoRouter(
       navigatorKey: _shellNavigatorKey,
       builder: (BuildContext context, GoRouterState state, Widget child) =>
           HomePage(child: child),
-      routes: $appRoutes
-          .where(
-            (element) => (element.path == TodoConstants.listRoute ||
-                element.path == TodoConstants.statsRoute),
-          )
-          .toList(),
-    ),
-    GoRoute(
-      //parentNavigatorKey: _rootNavigatorKey,
-      path: TodoConstants.addTodoRoute,
-      builder: (BuildContext context, GoRouterState state) => MultiProvider(
-          providers: AddTodoDependecies.of(context).providers,
-          child: const AddTodoPage()),
-    ),
-    GoRoute(
-      parentNavigatorKey: _rootNavigatorKey,
-      path: TodoConstants.todoDetails,
-      builder: (BuildContext context, GoRouterState state) => TodoDetailsPage(
-        id: state.params['id']!,
-        todo: state.extra as TodoEntity,
-      ),
+      routes: $appRoutes,
     ),
   ],
 );
 
 @TypedGoRoute<TodoListRoute>(
   path: TodoConstants.listRoute,
+  routes: [
+    TypedGoRoute<AddTodoRoute>(
+      path: TodoConstants.addTodoRoute,
+    ),
+    TypedGoRoute<TodoDetailsRoute>(
+      path: TodoConstants.todoDetails,
+    ),
+  ],
 )
 class TodoListRoute extends GoRouteData {
   const TodoListRoute();
@@ -68,10 +55,35 @@ class TodoListRoute extends GoRouteData {
   Page<void> buildPage(BuildContext context, GoRouterState state) =>
       NoTransitionPage(
         child: MultiProvider(
-          providers: TodosListDependecies.of(context).providers,
+          providers: TodosListDependecies.from(context).providers,
           child: const TodosListPage(),
         ),
       );
+}
+
+class TodoDetailsRoute extends GoRouteData {
+  const TodoDetailsRoute(
+    this.id, {
+    this.$extra,
+  });
+  final String id;
+  final TodoEntity? $extra;
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return NoTransitionPage(child: TodoDetailsPage(todo: $extra!, id: id));
+  }
+}
+
+class AddTodoRoute extends GoRouteData {
+  const AddTodoRoute();
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      NoTransitionPage(
+          child: MultiProvider(
+              providers: AddTodoDependecies.from(context).providers,
+              child: const AddTodoPage()));
 }
 
 @TypedGoRoute<StatsRoute>(

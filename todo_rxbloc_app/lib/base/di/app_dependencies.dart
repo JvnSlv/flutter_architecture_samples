@@ -17,6 +17,8 @@ import '../app/config/environment_config.dart';
 import '../common_blocs/coordinator_bloc.dart';
 import '../routers/router.dart';
 import '../services/todo_service.dart';
+import '../utils/constants.dart';
+import '../utils/todos_data.dart';
 
 class AppDependencies {
   AppDependencies._(this.context, this.config);
@@ -67,15 +69,16 @@ class AppDependencies {
 
   List<Provider> get _dataSources => [
         Provider<TodoService>(
-            create: (context) => TodoService(
-                  ReactiveLocalStorageRepository(
-                    seedValue: [],
-                    repository: KeyValueStorage(
-                      'todo_rxbloc_app',
-                      SharedPreferences.getInstance(),
-                    ),
-                  ),
-                ))
+          create: (context) => TodoService(
+            ReactiveLocalStorageRepository(
+              seedValue: listOfTods,
+              repository: KeyValueStorage(
+                TodoConstants.keyValueStorageKey,
+                SharedPreferences.getInstance(),
+              ),
+            ),
+          ),
+        ),
       ];
 
   List<Provider> get _repositories => [];
@@ -86,7 +89,6 @@ class AppDependencies {
         RxBlocProvider<NavigationBlocType>(
           create: (context) => NavigationBloc(
             router: goRouter,
-            coordinatorBloc: context.read(),
           ),
         ),
       ];

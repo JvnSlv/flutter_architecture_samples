@@ -32,16 +32,12 @@ class _AddTodoPageState extends State<AddTodoPage> {
                 state: (bloc) => bloc.states.validateTitle,
                 builder: (context, snapshot, bloc) => TextFormField(
                   autofocus: true,
-                  onChanged: (title) => context
-                      .read<AddTodoBlocType>()
-                      .events
-                      .setTitle(title.trim()),
+                  onChanged: (title) => bloc.events.setTitle(title.trim()),
                   controller: taskController,
                   decoration: InputDecoration(
-                    errorText:
-                        snapshot.data == context.l10n.featureAddTodo.emptyText
-                            ? context.l10n.featureAddTodo.todoTaskError
-                            : null,
+                    errorText: (snapshot.data == '')
+                        ? context.l10n.featureAddTodo.todoTaskError
+                        : null,
                     hintText: context.l10n.featureAddTodo.task,
                   ),
                   style: Theme.of(context).textTheme.headline5,

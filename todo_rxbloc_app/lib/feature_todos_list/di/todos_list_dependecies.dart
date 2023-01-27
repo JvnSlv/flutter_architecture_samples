@@ -1,39 +1,36 @@
-// Copyright (c) 2022, Prime Holding JSC
-// https://www.primeholding.com
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_rx_bloc/flutter_rx_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import '../bloc/todos_list_bloc.dart';
+import '../bloc/todos_list_manage_bloc.dart';
 
 class TodosListDependecies {
   TodosListDependecies._(this.context);
 
-  factory TodosListDependecies.of(BuildContext context) => _instance != null
-      ? _instance!
-      : _instance = TodosListDependecies._(context);
-
-  static TodosListDependecies? _instance;
+  factory TodosListDependecies.from(BuildContext context) =>
+      TodosListDependecies._(context);
 
   final BuildContext context;
 
-  /// List of all providers used throughout the app
-  List<SingleChildWidget> get providers => [
-        ..._blocs,
-      ];
+  late List<SingleChildWidget> providers = [
+    ..._repositories,
+    ..._blocs,
+  ];
 
-  List<SingleChildWidget> get _blocs => [
-        RxBlocProvider<TodosListBlocType>(
-          create: (context) => TodosListBloc(
-            todoService: context.read(),
-            coordinatorBloc: context.read(),
-          ),
-        )
-      ];
+  late final List<Provider> _repositories = [];
+
+  late final List<RxBlocProvider> _blocs = [
+    RxBlocProvider<TodosListBlocType>(
+      create: (context) => TodosListBloc(
+        todoService: context.read(),
+        navigationBloc: context.read(),
+      ),
+    ),
+    RxBlocProvider<TodosListManageBlocType>(
+        create: (context) => TodosListManageBloc(
+              todoService: context.read(),
+            )),
+  ];
 }

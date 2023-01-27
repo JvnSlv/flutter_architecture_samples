@@ -4,7 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:todos_repository_core/todos_repository_core.dart';
 
 import '../../app_extensions.dart';
+import '../../base/enums/current_page_enum.dart';
+import '../../base/models/navigation_parametars.dart';
 import '../bloc/todos_list_bloc.dart';
+import '../bloc/todos_list_manage_bloc.dart';
 import '../components/delete_success_toast.dart';
 import '../components/todo_list_tile.dart';
 
@@ -12,11 +15,7 @@ class TodosListPage extends StatelessWidget {
   const TodosListPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return RxBlocListener<TodosListBlocType, TodoEntity?>(
-      state: (bloc) => bloc.states.navigate,
-      listener: (context, state) => state,
-      child: DeleteSuccessToast(
+  Widget build(BuildContext context) => DeleteSuccessToast(
         child: Scaffold(
           appBar: AppBar(
             title: Text(context.l10n.featureTodosList.todosListAppBarTitle),
@@ -35,28 +34,31 @@ class TodosListPage extends StatelessWidget {
               itemCount: snapshot.length,
               itemBuilder: (context, index) => TodoListTile(
                 todoEntity: snapshot[index],
-                onTap: () => context
-                    .read<TodosListBlocType>()
-                    .events
-                    .navigateToPage(snapshot[index]),
+                onTap: () => bloc.events.navigateToPage(NavigationParametars(
+                  navigationEnum: NavigationEnum.todoDetails,
+                  extraParametars: snapshot[index],
+                )),
                 onChanged: (_) => context
-                    .read<TodosListBlocType>()
+                    .read<TodosListManageBlocType>()
                     .events
                     .updateTodo(snapshot[index]),
                 onDismissed: (direciton) =>
-                    context.read<TodosListBlocType>().events.deleteTodo(
+                    context.read<TodosListManageBlocType>().events.deleteTodo(
                           snapshot[index],
                         ),
               ),
             ),
           ),
-          floatingActionButton: FloatingActionButton(
-            child: Icon(context.designSystem.icons.plusSign),
-            onPressed: () =>
-                context.read<TodosListBlocType>().events.navigateToPage(null),
+          floatingActionButton:
+              RxBlocBuilder<TodosListBlocType, NavigationParametars>(
+            state: (bloc) => bloc.states.navigate,
+            builder: (context, snapshot, bloc) => FloatingActionButton(
+              child: Icon(context.designSystem.icons.plusSign),
+              onPressed: () => bloc.events.navigateToPage(
+                  const NavigationParametars(
+                      navigationEnum: NavigationEnum.addTodo)),
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }
