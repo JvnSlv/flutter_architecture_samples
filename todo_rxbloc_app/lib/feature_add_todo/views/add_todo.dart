@@ -25,7 +25,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
           title: Text(context.l10n.featureAddTodo.addTodoAppBarTitle),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(context.designSystem.spacing.space16),
           child: Column(
             children: [
               RxBlocBuilder<AddTodoBlocType, String>(
@@ -43,9 +43,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
                   style: Theme.of(context).textTheme.headline5,
                 ),
               ),
-              const SizedBox(
-                height: 25,
-              ),
+              SizedBox(height: context.designSystem.spacing.space25),
               TextFormField(
                 onChanged: (description) => context
                     .read<AddTodoBlocType>()
