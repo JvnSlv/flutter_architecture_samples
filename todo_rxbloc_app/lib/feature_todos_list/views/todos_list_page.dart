@@ -8,14 +8,13 @@ import '../../base/enums/current_page_enum.dart';
 import '../../base/models/navigation_parametars.dart';
 import '../bloc/todos_list_bloc.dart';
 import '../bloc/todos_list_manage_bloc.dart';
-import '../components/delete_success_toast.dart';
 import '../components/todo_list_tile.dart';
 
 class TodosListPage extends StatelessWidget {
   const TodosListPage({super.key});
 
   @override
-  Widget build(BuildContext context) => DeleteSuccessToast(
+  Widget build(BuildContext context) => _buildDeleteToastMessage(
         child: Scaffold(
           appBar: AppBar(
             title: Text(context.l10n.featureTodosList.todosListAppBarTitle),
@@ -62,3 +61,32 @@ class TodosListPage extends StatelessWidget {
         ),
       );
 }
+
+Widget _buildDeleteToastMessage({required Widget child}) =>
+    RxBlocListener<TodosListManageBlocType, TodoEntity>(
+      state: (bloc) => bloc.states.todoDeleted,
+      listener: (context, todo) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                    '${todo.task}  ${context.l10n.featureTodosList.successDelete}'),
+                GestureDetector(
+                  onTap: () {
+                    context
+                        .read<TodosListManageBlocType>()
+                        .events
+                        .addTodo(todo);
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  },
+                  child: Text(context.l10n.featureTodosList.undo),
+                )
+              ],
+            ),
+          ),
+        );
+      },
+      child: child,
+    );

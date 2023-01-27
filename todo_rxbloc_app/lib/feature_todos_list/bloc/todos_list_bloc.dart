@@ -27,7 +27,6 @@ class TodosListBloc extends $TodosListBloc {
   });
   final NavigationBlocType navigationBloc;
   final TodoService todoService;
-
   @override
   Stream<Result<List<TodoEntity>>> _mapToTodosListState() =>
       _$fetchTodosListEvent
