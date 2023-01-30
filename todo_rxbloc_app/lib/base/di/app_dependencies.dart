@@ -87,7 +87,9 @@ class AppDependencies {
 
   List<SingleChildWidget> get _blocs => [
         RxBlocProvider<NavigationBlocType>(
-          create: (context) => NavigationBloc(router: goRouter),
+          create: (context) => NavigationBloc(
+            router: goRouter,
+          ),
         ),
       ];
 

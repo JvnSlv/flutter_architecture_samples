@@ -10,10 +10,11 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:todos_repository_core/todos_repository_core.dart';
 
+import '../../feature_add_todo/di/add_todo_dependecies.dart';
+import '../../feature_add_todo/views/add_todo.dart';
 import '../../feature_homepage/views/home_page.dart';
 import '../../feature_stats/views/stats_page.dart';
 import '../../feature_todo_details/views/todo_details_page.dart';
-import '../../feature_todo_menage/views/add_todo.dart';
 import '../../feature_todos_list/di/todos_list_dependecies.dart';
 import '../../feature_todos_list/views/todos_list_page.dart';
 import '../utils/constants.dart';
@@ -80,7 +81,10 @@ class AddTodoRoute extends GoRouteData {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      const NoTransitionPage(child: AddTodoPage());
+      NoTransitionPage(
+          child: MultiProvider(
+              providers: AddTodoDependecies.from(context).providers,
+              child: const AddTodoPage()));
 }
 
 @TypedGoRoute<StatsRoute>(
