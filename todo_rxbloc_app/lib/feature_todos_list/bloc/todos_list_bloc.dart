@@ -11,12 +11,12 @@ part 'todos_list_bloc_extensions.dart';
 
 abstract class TodosListBlocEvents {
   void fetchTodosList();
-  void navigateToPage(NavigationParametars navigationParametars);
+  void navigateToPage(NavigationParams navigationParametars);
 }
 
 abstract class TodosListBlocStates {
   Stream<Result<List<TodoEntity>>> get todosList;
-  Stream<NavigationParametars> get navigate;
+  Stream<NavigationParams> get navigate;
 }
 
 @RxBloc()
@@ -39,7 +39,7 @@ class TodosListBloc extends $TodosListBloc {
           .asResultStream();
 
   @override
-  Stream<NavigationParametars> _mapToNavigateState() =>
+  Stream<NavigationParams> _mapToNavigateState() =>
       _$navigateToPageEvent.doOnData((event) {
         navigationBloc.events.navigate(event);
       });
