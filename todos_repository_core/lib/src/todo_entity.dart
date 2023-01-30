@@ -6,16 +6,16 @@ import 'dart:convert';
 // in the LICENSE file.
 
 class TodoEntity {
-  final bool complete;
   final String id;
-  final String note;
   final String task;
+  final String note;
+  final bool complete;
 
   TodoEntity({
-    required this.complete,
     required this.id,
-    required this.note,
     required this.task,
+    required this.note,
+    required this.complete,
   });
 
   @override
@@ -27,45 +27,45 @@ class TodoEntity {
       identical(this, other) ||
       other is TodoEntity &&
           runtimeType == other.runtimeType &&
-          complete == other.complete &&
+          id == other.id &&
           task == other.task &&
           note == other.note &&
-          id == other.id;
+          complete == other.complete;
 
   Map<String, Object> toJson() {
     return {
-      'complete': complete,
+      'id': id,
       'task': task,
       'note': note,
-      'id': id,
+      'complete': complete,
     };
   }
 
   @override
   String toString() {
-    return 'TodoEntity{complete: $complete, task: $task, note: $note, id: $id}';
+    return 'TodoEntity{id: $id, task: $task, note: $note, complete: $complete, }';
   }
 
-  static TodoEntity fromJson(Map<String, Object> json) {
+  static TodoEntity fromJson(Map<String, dynamic> json) {
     return TodoEntity(
-      complete: json['complete'] as bool,
       id: json['id'] as String,
-      note: json['note'] as String,
       task: json['task'] as String,
+      note: json['note'] as String,
+      complete: json['complete'] as bool,
     );
   }
 
   TodoEntity copyWith({
-    bool? complete,
     String? id,
-    String? note,
     String? task,
+    String? note,
+    bool? complete,
   }) {
     return TodoEntity(
-      complete: complete ?? this.complete,
       id: id ?? this.id,
-      note: note ?? this.note,
       task: task ?? this.task,
+      note: note ?? this.note,
+      complete: complete ?? this.complete,
     );
   }
 }

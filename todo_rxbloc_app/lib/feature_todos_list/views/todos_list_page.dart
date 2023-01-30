@@ -50,13 +50,15 @@ class TodosListPage extends StatelessWidget {
               ),
             ),
           ),
-          floatingActionButton: FloatingActionButton(
-            child: Icon(context.designSystem.icons.plusSign),
-            onPressed: () =>
-                context.read<TodosListBlocType>().events.navigateToPage(
-                      const NavigationParams(
-                          navigationEnum: NavigationEnum.addTodo),
-                    ),
+          floatingActionButton:
+              RxBlocBuilder<TodosListBlocType, NavigationParams>(
+            state: (bloc) => bloc.states.navigate,
+            builder: (context, snapshot, bloc) => FloatingActionButton(
+              child: Icon(context.designSystem.icons.plusSign),
+              onPressed: () => bloc.events.navigateToPage(
+                const NavigationParams(navigationEnum: NavigationEnum.addTodo),
+              ),
+            ),
           ),
         ),
       );

@@ -1,0 +1,4 @@
+enum NewTodoEnum {
+  newTodoSuccess,
+  newTodoError,
+}
