@@ -23,32 +23,31 @@ abstract class $TodosListBloc extends RxBlocBase
   final _$fetchTodosListEvent = PublishSubject<void>();
 
   /// Тhe [Subject] where events sink to by calling [navigateToPage]
-  final _$navigateToPageEvent = PublishSubject<NavigationParametars>();
+  final _$navigateToPageEvent = PublishSubject<NavigationParams>();
 
   /// The state of [todosList] implemented in [_mapToTodosListState]
   late final Stream<Result<List<TodoEntity>>> _todosListState =
       _mapToTodosListState();
 
   /// The state of [navigate] implemented in [_mapToNavigateState]
-  late final Stream<NavigationParametars> _navigateState =
-      _mapToNavigateState();
+  late final Stream<NavigationParams> _navigateState = _mapToNavigateState();
 
   @override
   void fetchTodosList() => _$fetchTodosListEvent.add(null);
 
   @override
-  void navigateToPage(NavigationParametars navigationParametars) =>
+  void navigateToPage(NavigationParams navigationParametars) =>
       _$navigateToPageEvent.add(navigationParametars);
 
   @override
   Stream<Result<List<TodoEntity>>> get todosList => _todosListState;
 
   @override
-  Stream<NavigationParametars> get navigate => _navigateState;
+  Stream<NavigationParams> get navigate => _navigateState;
 
   Stream<Result<List<TodoEntity>>> _mapToTodosListState();
 
-  Stream<NavigationParametars> _mapToNavigateState();
+  Stream<NavigationParams> _mapToNavigateState();
 
   @override
   TodosListBlocEvents get events => this;

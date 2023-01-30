@@ -33,10 +33,12 @@ class TodosListPage extends StatelessWidget {
               itemCount: snapshot.length,
               itemBuilder: (context, index) => TodoListTile(
                 todoEntity: snapshot[index],
-                onTap: () => bloc.events.navigateToPage(NavigationParametars(
-                  navigationEnum: NavigationEnum.todoDetails,
-                  extraParametars: snapshot[index],
-                )),
+                onTap: () => bloc.events.navigateToPage(
+                  NavigationParams(
+                    navigationEnum: NavigationEnum.todoDetails,
+                    extraParametars: snapshot[index],
+                  ),
+                ),
                 onChanged: (_) => context
                     .read<TodosListManageBlocType>()
                     .events
@@ -49,13 +51,13 @@ class TodosListPage extends StatelessWidget {
             ),
           ),
           floatingActionButton:
-              RxBlocBuilder<TodosListBlocType, NavigationParametars>(
+              RxBlocBuilder<TodosListBlocType, NavigationParams>(
             state: (bloc) => bloc.states.navigate,
             builder: (context, snapshot, bloc) => FloatingActionButton(
               child: Icon(context.designSystem.icons.plusSign),
               onPressed: () => bloc.events.navigateToPage(
-                  const NavigationParametars(
-                      navigationEnum: NavigationEnum.addTodo)),
+                const NavigationParams(navigationEnum: NavigationEnum.addTodo),
+              ),
             ),
           ),
         ),

@@ -18,12 +18,12 @@ class HomePage extends StatelessWidget {
     switch (pageIndex) {
       case 0:
         context.read<NavigationBlocType>().events.navigate(
-            const NavigationParametars(
-                navigationEnum: NavigationEnum.todosList));
+              const NavigationParams(navigationEnum: NavigationEnum.todosList),
+            );
         break;
       case 1:
         context.read<NavigationBlocType>().events.navigate(
-              const NavigationParametars(navigationEnum: NavigationEnum.stats),
+              const NavigationParams(navigationEnum: NavigationEnum.stats),
             );
         break;
     }
@@ -31,7 +31,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      RxBlocBuilder<NavigationBlocType, NavigationParametars>(
+      RxBlocBuilder<NavigationBlocType, NavigationParams>(
         state: (bloc) => bloc.states.getPageIndex,
         builder: (context, snapshot, bloc) => Scaffold(
           body: child,

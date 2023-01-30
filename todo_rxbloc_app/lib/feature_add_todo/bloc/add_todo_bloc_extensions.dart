@@ -25,7 +25,7 @@ extension _AddTodoExtension on Stream {
                   note: value.description,
                 ),
               );
-              navigationBloc.events.navigate(const NavigationParametars(
+              navigationBloc.events.navigate(const NavigationParams(
                 navigationEnum: NavigationEnum.pop,
               ));
               yield Result.success(NewTodoEnum.newTodoSuccess);
