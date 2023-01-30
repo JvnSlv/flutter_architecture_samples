@@ -20,20 +20,20 @@ abstract class $NavigationBloc extends RxBlocBase
   final _compositeSubscription = CompositeSubscription();
 
   /// Тhe [Subject] where events sink to by calling [navigate]
-  final _$navigateEvent = PublishSubject<NavigationParametars>();
+  final _$navigateEvent = PublishSubject<NavigationParams>();
 
   /// The state of [getPageIndex] implemented in [_mapToGetPageIndexState]
-  late final Stream<NavigationParametars> _getPageIndexState =
+  late final Stream<NavigationParams> _getPageIndexState =
       _mapToGetPageIndexState();
 
   @override
-  void navigate(NavigationParametars navigationParametars) =>
+  void navigate(NavigationParams navigationParametars) =>
       _$navigateEvent.add(navigationParametars);
 
   @override
-  Stream<NavigationParametars> get getPageIndex => _getPageIndexState;
+  Stream<NavigationParams> get getPageIndex => _getPageIndexState;
 
-  Stream<NavigationParametars> _mapToGetPageIndexState();
+  Stream<NavigationParams> _mapToGetPageIndexState();
 
   @override
   NavigationBlocEvents get events => this;

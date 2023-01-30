@@ -9,11 +9,11 @@ import '../../base/routers/router.dart';
 part 'navigation_bloc.rxb.g.dart';
 
 abstract class NavigationBlocEvents {
-  void navigate(NavigationParametars navigationParametars);
+  void navigate(NavigationParams navigationParametars);
 }
 
 abstract class NavigationBlocStates {
-  Stream<NavigationParametars> get getPageIndex;
+  Stream<NavigationParams> get getPageIndex;
 }
 
 @RxBloc()
@@ -22,7 +22,7 @@ class NavigationBloc extends $NavigationBloc {
   final GoRouter router;
 
   @override
-  Stream<NavigationParametars> _mapToGetPageIndexState() =>
+  Stream<NavigationParams> _mapToGetPageIndexState() =>
       _$navigateEvent.doOnData((event) {
         switch (event.navigationEnum) {
           case NavigationEnum.todosList:

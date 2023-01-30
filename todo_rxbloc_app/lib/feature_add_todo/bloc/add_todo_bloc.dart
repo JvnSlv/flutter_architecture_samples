@@ -12,6 +12,7 @@ import '../../feature_homepage/bloc/navigation_bloc.dart';
 
 part 'add_todo_bloc.rxb.g.dart';
 part 'add_todo_bloc_extensions.dart';
+part 'add_todo_bloc_models.dart';
 
 /// A contract class containing all events of the AddTodoBloC.
 abstract class AddTodoBlocEvents {
@@ -50,6 +51,7 @@ class AddTodoBloc extends $AddTodoBloc {
         _$setDescriptionEvent,
         uuid,
         navigationBloc,
+        this,
       )
       .shareReplay()
       .asBroadcastStream();
