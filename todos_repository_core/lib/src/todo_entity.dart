@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // Copyright 2018 The Flutter Architecture Sample Authors. All rights reserved.
 // Use of this source code is governed by the MIT license that can be found
 // in the LICENSE file.
@@ -8,7 +11,12 @@ class TodoEntity {
   final String note;
   final String task;
 
-  TodoEntity(this.task, this.id, this.note, this.complete);
+  TodoEntity({
+    required this.complete,
+    required this.id,
+    required this.note,
+    required this.task,
+  });
 
   @override
   int get hashCode =>
@@ -40,10 +48,24 @@ class TodoEntity {
 
   static TodoEntity fromJson(Map<String, Object> json) {
     return TodoEntity(
-      json['task'] as String,
-      json['id'] as String,
-      json['note'] as String,
-      json['complete'] as bool,
+      complete: json['complete'] as bool,
+      id: json['id'] as String,
+      note: json['note'] as String,
+      task: json['task'] as String,
+    );
+  }
+
+  TodoEntity copyWith({
+    bool? complete,
+    String? id,
+    String? note,
+    String? task,
+  }) {
+    return TodoEntity(
+      complete: complete ?? this.complete,
+      id: id ?? this.id,
+      note: note ?? this.note,
+      task: task ?? this.task,
     );
   }
 }

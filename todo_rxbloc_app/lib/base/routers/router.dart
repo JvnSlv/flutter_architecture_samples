@@ -7,9 +7,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:todos_repository_core/todos_repository_core.dart';
 
 import '../../feature_homepage/views/home_page.dart';
 import '../../feature_stats/views/stats_page.dart';
+import '../../feature_todo_details/views/todo_details_page.dart';
+import '../../feature_todo_menage/views/add_todo.dart';
+import '../../feature_todos_list/di/todos_list_dependecies.dart';
 import '../../feature_todos_list/views/todos_list_page.dart';
 import '../utils/constants.dart';
 
@@ -28,19 +33,54 @@ final GoRouter goRouter = GoRouter(
       builder: (BuildContext context, GoRouterState state, Widget child) =>
           HomePage(child: child),
       routes: $appRoutes,
-    )
+    ),
   ],
 );
 
 @TypedGoRoute<TodoListRoute>(
   path: TodoConstants.listRoute,
+  routes: [
+    TypedGoRoute<AddTodoRoute>(
+      path: TodoConstants.addTodoRoute,
+    ),
+    TypedGoRoute<TodoDetailsRoute>(
+      path: TodoConstants.todoDetails,
+    ),
+  ],
 )
 class TodoListRoute extends GoRouteData {
   const TodoListRoute();
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      const NoTransitionPage(child: TodosListPage());
+      NoTransitionPage(
+        child: MultiProvider(
+          providers: TodosListDependecies.from(context).providers,
+          child: const TodosListPage(),
+        ),
+      );
+}
+
+class TodoDetailsRoute extends GoRouteData {
+  const TodoDetailsRoute(
+    this.id, {
+    this.$extra,
+  });
+  final String id;
+  final TodoEntity? $extra;
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return NoTransitionPage(child: TodoDetailsPage(todo: $extra!, id: id));
+  }
+}
+
+class AddTodoRoute extends GoRouteData {
+  const AddTodoRoute();
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      const NoTransitionPage(child: AddTodoPage());
 }
 
 @TypedGoRoute<StatsRoute>(

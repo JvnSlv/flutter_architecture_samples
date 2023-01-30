@@ -4,5 +4,7 @@
   "@todosListAppBarTitle": {
     "description": "List of Todos"
   },
-  "listOfTodos":"List of Todos"
+  "listOfTodos":"List of Todos",
+  "successDelete":"deleted successfully",
+  "undo":"Undo"
 }
