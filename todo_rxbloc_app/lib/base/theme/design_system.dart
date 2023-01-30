@@ -5,12 +5,12 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-
 import 'package:flutter/material.dart';
 
 import 'design_system/design_system_colors.dart';
 import 'design_system/design_system_icons.dart';
 import 'design_system/design_system_images.dart';
+import 'design_system/design_system_spacing.dart';
 import 'design_system/design_system_typography.dart';
 
 @immutable
@@ -20,6 +20,7 @@ class DesignSystem extends ThemeExtension<DesignSystem> {
     required this.icons,
     required this.typography,
     required this.images,
+    required this.spacing,
   });
 
   DesignSystem.light()
@@ -27,19 +28,22 @@ class DesignSystem extends ThemeExtension<DesignSystem> {
         icons = const DesignSystemIcons(),
         images = const DesignSystemImages(),
         typography =
-            DesignSystemTypography.withColor(const DesignSystemColors.light());
+            DesignSystemTypography.withColor(const DesignSystemColors.light()),
+        spacing = const DesignSystemSpacing();
 
   DesignSystem.dark()
       : colors = const DesignSystemColors.dark(),
         icons = const DesignSystemIcons(),
         images = const DesignSystemImages(),
         typography =
-            DesignSystemTypography.withColor(const DesignSystemColors.dark());
+            DesignSystemTypography.withColor(const DesignSystemColors.dark()),
+        spacing = const DesignSystemSpacing();
 
   final DesignSystemColors colors;
   final DesignSystemIcons icons;
   final DesignSystemTypography typography;
   final DesignSystemImages images;
+  final DesignSystemSpacing spacing;
 
   @override
   ThemeExtension<DesignSystem> copyWith({
@@ -47,12 +51,14 @@ class DesignSystem extends ThemeExtension<DesignSystem> {
     DesignSystemIcons? icons,
     DesignSystemTypography? typography,
     DesignSystemImages? images,
+    DesignSystemSpacing? spacing,
   }) =>
       DesignSystem(
         colors: colors ?? this.colors,
         icons: icons ?? this.icons,
         typography: typography ?? this.typography,
         images: images ?? this.images,
+        spacing: spacing ?? this.spacing,
       );
 
   @override
