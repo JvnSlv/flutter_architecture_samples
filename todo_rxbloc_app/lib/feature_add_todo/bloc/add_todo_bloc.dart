@@ -1,7 +1,6 @@
 import 'package:rx_bloc/rx_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:todos_repository_core/todos_repository_core.dart';
-import 'package:uuid/uuid.dart' as id;
 import 'package:uuid/uuid.dart';
 
 import '../../base/enums/current_page_enum.dart';
@@ -37,7 +36,7 @@ class AddTodoBloc extends $AddTodoBloc {
     required this.todoService,
   });
   final TodoService todoService;
-  final id.Uuid uuid;
+  final Uuid uuid;
   final NavigationBlocType navigationBloc;
 
   @override

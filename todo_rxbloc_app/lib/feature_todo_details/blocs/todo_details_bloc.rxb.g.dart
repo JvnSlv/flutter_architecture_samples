@@ -26,7 +26,7 @@ abstract class $TodoDetailsBloc extends RxBlocBase
   final _$toggleTodoEvent = PublishSubject<_ToggleTodoEventArgs>();
 
   /// Тhe [Subject] where events sink to by calling [navigate]
-  final _$navigateEvent = PublishSubject<NavigationParametars>();
+  final _$navigateEvent = PublishSubject<NavigationParams>();
 
   /// Тhe [Subject] where events sink to by calling [deleteTodo]
   final _$deleteTodoEvent = PublishSubject<TodoEntity>();
@@ -53,7 +53,7 @@ abstract class $TodoDetailsBloc extends RxBlocBase
       ));
 
   @override
-  void navigate(NavigationParametars navigationParametars) =>
+  void navigate(NavigationParams navigationParametars) =>
       _$navigateEvent.add(navigationParametars);
 
   @override

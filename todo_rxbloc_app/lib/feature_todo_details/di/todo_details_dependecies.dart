@@ -23,8 +23,8 @@ class TodoDetialsDependecies {
   late final List<RxBlocProvider> _blocs = [
     RxBlocProvider<TodoDetailsBlocType>(
       create: (context) => TodoDetailsBloc(
-        service: context.read(),
         navigationBloc: context.read(),
+        coordinatorBloc: context.read(),
       ),
     )
   ];

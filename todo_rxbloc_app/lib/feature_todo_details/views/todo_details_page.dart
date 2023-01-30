@@ -70,9 +70,10 @@ class TodoDetailsPage extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => context.read<TodoDetailsBlocType>().events.navigate(
-                NavigationParametars(
-                    navigationEnum: NavigationEnum.addTodo,
-                    extraParametars: todo),
+                NavigationParams(
+                  navigationEnum: NavigationEnum.addTodo,
+                  extraParametars: todo,
+                ),
               ),
           child: Icon(context.designSystem.icons.edit),
         ),
