@@ -14,6 +14,7 @@ import '../../feature_add_todo/di/add_todo_dependecies.dart';
 import '../../feature_add_todo/views/add_todo.dart';
 import '../../feature_homepage/views/home_page.dart';
 import '../../feature_stats/views/stats_page.dart';
+import '../../feature_todo_details/di/todo_details_dependecies.dart';
 import '../../feature_todo_details/views/todo_details_page.dart';
 import '../../feature_todos_list/di/todos_list_dependecies.dart';
 import '../../feature_todos_list/views/todos_list_page.dart';
@@ -72,7 +73,12 @@ class TodoDetailsRoute extends GoRouteData {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return NoTransitionPage(child: TodoDetailsPage(todo: $extra!, id: id));
+    return NoTransitionPage(
+      child: MultiProvider(
+        providers: TodoDetialsDependecies.from(context).providers,
+        child: TodoDetailsPage(todo: $extra!, id: id),
+      ),
+    );
   }
 }
 
@@ -82,9 +88,11 @@ class AddTodoRoute extends GoRouteData {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) =>
       NoTransitionPage(
-          child: MultiProvider(
-              providers: AddTodoDependecies.from(context).providers,
-              child: const AddTodoPage()));
+        child: MultiProvider(
+          providers: AddTodoDependecies.from(context).providers,
+          child: const AddTodoPage(),
+        ),
+      );
 }
 
 @TypedGoRoute<StatsRoute>(
@@ -94,5 +102,7 @@ class StatsRoute extends GoRouteData {
   const StatsRoute();
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      const NoTransitionPage(child: StatsPage());
+      const NoTransitionPage(
+        child: StatsPage(),
+      );
 }

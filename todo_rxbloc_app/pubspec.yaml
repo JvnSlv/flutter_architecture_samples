@@ -66,3 +66,4 @@ r_flutter:
     - name: feature_stats
     - name: field
     - name: feature_add_todo
+    - name: feature_todo_details

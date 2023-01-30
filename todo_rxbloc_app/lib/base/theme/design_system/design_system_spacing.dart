@@ -1,5 +1,6 @@
 class DesignSystemSpacing {
   const DesignSystemSpacing();
+  final space8 = 8.0;
   final space10 = 10.0;
   final space15 = 15.0;
   final space16 = 16.0;
