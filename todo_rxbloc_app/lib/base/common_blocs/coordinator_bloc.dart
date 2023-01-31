@@ -14,12 +14,10 @@ part 'coordinator_bloc_extensions.dart';
 
 abstract class CoordinatorEvents {
   void deleteTodo(TodoEntity todo);
-  void updateTodo(TodoEntity todo);
 }
 
 abstract class CoordinatorStates {
-  Stream<TodoEntity> get todoDeleted;
-  Stream<TodoEntity> get todoUpdated;
+  Stream<TodoEntity> get deletedTodo;
 }
 
 /// The coordinator bloc manages the communication between blocs.
@@ -29,7 +27,5 @@ abstract class CoordinatorStates {
 @RxBloc()
 class CoordinatorBloc extends $CoordinatorBloc {
   @override
-  Stream<TodoEntity> _mapToTodoDeletedState() => _$deleteTodoEvent;
-  @override
-  Stream<TodoEntity> _mapToTodoUpdatedState() => _$updateTodoEvent;
+  Stream<TodoEntity> _mapToDeletedTodoState() => _$deleteTodoEvent;
 }

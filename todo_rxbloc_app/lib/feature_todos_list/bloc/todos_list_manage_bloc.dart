@@ -23,6 +23,9 @@ abstract class TodosListManageBlocStates {
   Stream<TodoEntity> get todoDeleted;
   ConnectableStream<void> get todoUpdated;
   ConnectableStream<void> get todoAdded;
+
+  Stream<bool> get isLoading;
+  Stream<String> get errors;
 }
 
 @RxBloc()
@@ -30,49 +33,51 @@ class TodosListManageBloc extends $TodosListManageBloc {
   final TodoService todoService;
   final CoordinatorBlocType coordinatorBloc;
   final NavigationBlocType navigationBloc;
-  TodosListManageBloc(
-      {required this.navigationBloc,
-      required this.coordinatorBloc,
-      required this.todoService}) {
+  TodosListManageBloc({
+    required this.navigationBloc,
+    required this.coordinatorBloc,
+    required this.todoService,
+  }) {
     todoUpdated.connect().addTo(_compositeSubscription);
     todoAdded.connect().addTo(_compositeSubscription);
-    coordinatorBloc.states.todoDeleted
-        .bind(_deleteSubject)
-        .addTo(_compositeSubscription);
-    coordinatorBloc.states.todoUpdated
-        .bind(_updateSubject)
+    coordinatorBloc.states.deletedTodo
+        .bind(_$deleteTodoEvent)
         .addTo(_compositeSubscription);
   }
 
-  final _deleteSubject = BehaviorSubject<TodoEntity>();
-  final _updateSubject = BehaviorSubject<TodoEntity>();
+  @override
+  ConnectableStream<void> _mapToTodoAddedState() => _$addTodoEvent
+      .switchMap((todo) => todoService.addTodo(todo).asResultStream())
+      .setResultStateHandler(this)
+      .whereSuccess()
+      .publish();
 
   @override
-  ConnectableStream<void> _mapToTodoAddedState() =>
-      _$addTodoEvent.doOnData((todo) {
-        todoService.addTodo(todo);
-      }).publish();
+  Stream<TodoEntity> _mapToTodoDeletedState() => _$deleteTodoEvent
+      .switchMap((todo) => todoService
+          .delteTodo(todo)
+          .whenComplete(
+            () => navigationBloc.events.navigate(
+              const NavigationParams(navigationEnum: NavigationEnum.todosList),
+            ),
+          )
+          .asResultStream())
+      .setResultStateHandler(this)
+      .whereSuccess();
 
   @override
-  Stream<TodoEntity> _mapToTodoDeletedState() => Rx.merge([
-        _$deleteTodoEvent.doOnData((todo) {
-          todoService.delteTodo(todo);
-        }),
-        _deleteSubject.doOnData((todo) {
-          todoService.delteTodo(todo);
-          navigationBloc.events.navigate(
-            const NavigationParams(navigationEnum: NavigationEnum.todosList),
-          );
-        })
-      ]);
+  ConnectableStream<void> _mapToTodoUpdatedState() => _$updateTodoEvent
+      .switchMap((todo) => todoService
+          .updateTodo(todo.copyWith(complete: !todo.complete))
+          .asResultStream())
+      .setResultStateHandler(this)
+      .whereSuccess()
+      .publish();
 
   @override
-  ConnectableStream<void> _mapToTodoUpdatedState() => Rx.merge([
-        _$updateTodoEvent.doOnData((todo) {
-          todoService.updateTodo(todo.copyWith(complete: !todo.complete));
-        }),
-        _updateSubject.doOnData(
-          (todo) => todoService.updateTodo(todo),
-        )
-      ]).publish();
+  Stream<String> _mapToErrorsState() =>
+      errorState.map((Exception error) => error.toString());
+
+  @override
+  Stream<bool> _mapToIsLoadingState() => loadingState;
 }
