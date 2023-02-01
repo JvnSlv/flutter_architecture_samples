@@ -33,22 +33,31 @@ class TodoDetailsBloc extends $TodoDetailsBloc {
   }) {
     setNavigation.connect().addTo(_compositeSubscription);
     todoDeleted.connect().addTo(_compositeSubscription);
+    coordinatorBloc.states.sendUpdatedTodo
+        .bind(_updatedSubject)
+        .addTo(_compositeSubscription);
   }
+
+  final _updatedSubject = BehaviorSubject<TodoEntity>();
+
   @override
-  Stream<TodoEntity> _mapToTodoEntityState() => _$toggleTodoEvent
-      .doOnData((event) {
-        coordinatorBloc.events.updateTodo(
-          event.todoEntity.copyWith(complete: event.isComplete),
-        );
-      })
-      .switchMap((value) async* {
-        yield Result.success(
-            value.todoEntity.copyWith(complete: value.isComplete));
-      })
-      .setResultStateHandler(this)
-      .whereSuccess()
-      .shareReplay()
-      .asBroadcastStream();
+  Stream<TodoEntity> _mapToTodoEntityState() => Rx.merge([
+        _$toggleTodoEvent.doOnData((event) {
+          coordinatorBloc.events.updateTodo(
+            event.todoEntity.copyWith(complete: event.isComplete),
+          );
+        }).switchMap((value) async* {
+          yield Result.success(
+              value.todoEntity.copyWith(complete: value.isComplete));
+        }),
+        _updatedSubject.doOnData((event) {
+          print(event);
+        }).asResultStream(),
+      ])
+          .setResultStateHandler(this)
+          .whereSuccess()
+          .shareReplay(maxSize: 1)
+          .asBroadcastStream();
 
   @override
   ConnectableStream<void> _mapToSetNavigationState() =>

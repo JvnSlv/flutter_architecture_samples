@@ -2,17 +2,19 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_rx_bloc/flutter_rx_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:todos_repository_core/todos_repository_core.dart';
 import 'package:uuid/uuid.dart';
 
-import '../bloc/add_todo_bloc.dart';
+import '../bloc/manage_todo_bloc.dart';
 
-class AddTodoDependecies {
-  AddTodoDependecies._(this.context);
+class ManageTodoDependecies {
+  ManageTodoDependecies._(this.context, this.todo);
 
-  factory AddTodoDependecies.from(BuildContext context) =>
-      AddTodoDependecies._(context);
+  factory ManageTodoDependecies.from(BuildContext context, TodoEntity? todo) =>
+      ManageTodoDependecies._(context, todo);
 
   final BuildContext context;
+  final TodoEntity? todo;
 
   late List<SingleChildWidget> providers = [
     ..._repositories,
@@ -22,11 +24,13 @@ class AddTodoDependecies {
   late final List<Provider> _repositories = [];
 
   List<SingleChildWidget> get _blocs => [
-        RxBlocProvider<AddTodoBlocType>(
-          create: (context) => AddTodoBloc(
+        RxBlocProvider<ManageTodoBlocType>(
+          create: (context) => ManageTodoBloc(
             todoService: context.read(),
             uuid: const Uuid(),
             navigationBloc: context.read(),
+            coordinatorBloc: context.read(),
+            todo: todo,
           ),
         )
       ];

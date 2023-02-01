@@ -19,10 +19,15 @@ class TodoDetailsPage extends StatelessWidget {
           centerTitle: true,
           title: Text(context.l10n.featureTodoDetails.todoDetailsAppBarTitle),
           actions: [
-            IconButton(
-              icon: Icon(context.designSystem.icons.delete),
-              onPressed: () =>
-                  context.read<TodoDetailsBlocType>().events.deleteTodo(todo),
+            RxBlocBuilder<TodoDetailsBlocType, TodoEntity>(
+              state: (bloc) => bloc.states.todoEntity,
+              builder: (context, snapshot, bloc) => IconButton(
+                icon: Icon(context.designSystem.icons.delete),
+                onPressed: () => context
+                    .read<TodoDetailsBlocType>()
+                    .events
+                    .deleteTodo(snapshot.data ?? todo),
+              ),
             )
           ],
         ),
@@ -45,24 +50,27 @@ class TodoDetailsPage extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: context.designSystem.spacing.space8,
-                        bottom: context.designSystem.spacing.space16,
+                child: RxBlocBuilder<TodoDetailsBlocType, TodoEntity>(
+                  state: (bloc) => bloc.states.todoEntity,
+                  builder: (context, snapshot, bloc) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: context.designSystem.spacing.space8,
+                          bottom: context.designSystem.spacing.space16,
+                        ),
+                        child: Text(
+                          snapshot.data?.task ?? todo.task,
+                          style: Theme.of(context).textTheme.headline5,
+                        ),
                       ),
-                      child: Text(
-                        todo.task,
-                        style: Theme.of(context).textTheme.headline5,
-                      ),
-                    ),
-                    Text(
-                      todo.note,
-                      style: Theme.of(context).textTheme.subtitle1,
-                    )
-                  ],
+                      Text(
+                        snapshot.data?.note ?? todo.note,
+                        style: Theme.of(context).textTheme.subtitle1,
+                      )
+                    ],
+                  ),
                 ),
               ),
             ],

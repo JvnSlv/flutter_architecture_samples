@@ -4,19 +4,19 @@
 // Generator: RxBlocGeneratorForAnnotation
 // **************************************************************************
 
-part of 'add_todo_bloc.dart';
+part of 'manage_todo_bloc.dart';
 
 /// Used as a contractor for the bloc, events and states classes
 /// {@nodoc}
-abstract class AddTodoBlocType extends RxBlocTypeBase {
-  AddTodoBlocEvents get events;
-  AddTodoBlocStates get states;
+abstract class ManageTodoBlocType extends RxBlocTypeBase {
+  ManageTodoBlocEvents get events;
+  ManageTodoBlocStates get states;
 }
 
-/// [$AddTodoBloc] extended by the [AddTodoBloc]
+/// [$ManageTodoBloc] extended by the [ManageTodoBloc]
 /// {@nodoc}
-abstract class $AddTodoBloc extends RxBlocBase
-    implements AddTodoBlocEvents, AddTodoBlocStates, AddTodoBlocType {
+abstract class $ManageTodoBloc extends RxBlocBase
+    implements ManageTodoBlocEvents, ManageTodoBlocStates, ManageTodoBlocType {
   final _compositeSubscription = CompositeSubscription();
 
   /// Тhe [Subject] where events sink to by calling [setTitle]
@@ -34,6 +34,15 @@ abstract class $AddTodoBloc extends RxBlocBase
   /// The state of [newTodo] implemented in [_mapToNewTodoState]
   late final Stream<NewTodoEnum> _newTodoState = _mapToNewTodoState();
 
+  /// The state of [getDescription] implemented in [_mapToGetDescriptionState]
+  late final Stream<String> _getDescriptionState = _mapToGetDescriptionState();
+
+  /// The state of [errors] implemented in [_mapToErrorsState]
+  late final Stream<String> _errorsState = _mapToErrorsState();
+
+  /// The state of [isLoading] implemented in [_mapToIsLoadingState]
+  late final Stream<bool> _isLoadingState = _mapToIsLoadingState();
+
   @override
   void setTitle(String title) => _$setTitleEvent.add(title);
 
@@ -50,15 +59,30 @@ abstract class $AddTodoBloc extends RxBlocBase
   @override
   Stream<NewTodoEnum> get newTodo => _newTodoState;
 
+  @override
+  Stream<String> get getDescription => _getDescriptionState;
+
+  @override
+  Stream<String> get errors => _errorsState;
+
+  @override
+  Stream<bool> get isLoading => _isLoadingState;
+
   Stream<String> _mapToValidateTitleState();
 
   Stream<NewTodoEnum> _mapToNewTodoState();
 
-  @override
-  AddTodoBlocEvents get events => this;
+  Stream<String> _mapToGetDescriptionState();
+
+  Stream<String> _mapToErrorsState();
+
+  Stream<bool> _mapToIsLoadingState();
 
   @override
-  AddTodoBlocStates get states => this;
+  ManageTodoBlocEvents get events => this;
+
+  @override
+  ManageTodoBlocStates get states => this;
 
   @override
   void dispose() {

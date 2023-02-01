@@ -32,7 +32,15 @@ class NavigationBloc extends $NavigationBloc {
             router.go(const StatsRoute().location);
             break;
           case NavigationEnum.addTodo:
-            router.push(const AddTodoRoute().location);
+            if (event.extraParametars != null) {
+              final TodoEntity todo = event.extraParametars as TodoEntity;
+              router.push(ManageTodoRoute().location, extra: todo);
+            } else {
+              router.push(
+                ManageTodoRoute().location,
+              );
+            }
+
             break;
           case NavigationEnum.todoDetails:
             if (event.extraParametars != null) {
