@@ -6,6 +6,7 @@ import 'package:todos_repository_core/todos_repository_core.dart';
 import '../../app_extensions.dart';
 import '../../base/enums/current_page_enum.dart';
 import '../../base/models/navigation_parametars.dart';
+import '../../feature_homepage/bloc/navigation_bloc.dart';
 import '../blocs/todo_details_bloc.dart';
 
 class TodoDetailsPage extends StatelessWidget {
@@ -20,7 +21,7 @@ class TodoDetailsPage extends StatelessWidget {
           title: Text(context.l10n.featureTodoDetails.todoDetailsAppBarTitle),
           actions: [
             RxBlocBuilder<TodoDetailsBlocType, TodoEntity>(
-              state: (bloc) => bloc.states.todoEntity,
+              state: (bloc) => bloc.states.updatedTodo,
               builder: (context, snapshot, bloc) => IconButton(
                 icon: Icon(context.designSystem.icons.delete),
                 onPressed: () => context
@@ -40,18 +41,18 @@ class TodoDetailsPage extends StatelessWidget {
                 padding:
                     EdgeInsets.only(right: context.designSystem.spacing.space8),
                 child: RxBlocBuilder<TodoDetailsBlocType, TodoEntity>(
-                  state: (bloc) => bloc.states.todoEntity,
+                  state: (bloc) => bloc.states.updatedTodo,
                   builder: (context, snapshot, bloc) => Checkbox(
                     value: snapshot.data?.complete ?? todo.complete,
                     onChanged: (value) {
-                      bloc.events.toggleTodo(todo, value!);
+                      bloc.events.toggleTodo(snapshot.data ?? todo, value!);
                     },
                   ),
                 ),
               ),
               Expanded(
                 child: RxBlocBuilder<TodoDetailsBlocType, TodoEntity>(
-                  state: (bloc) => bloc.states.todoEntity,
+                  state: (bloc) => bloc.states.updatedTodo,
                   builder: (context, snapshot, bloc) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -76,14 +77,17 @@ class TodoDetailsPage extends StatelessWidget {
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => context.read<TodoDetailsBlocType>().events.navigate(
-                NavigationParams(
-                  navigationEnum: NavigationEnum.addTodo,
-                  extraParametars: todo,
+        floatingActionButton: RxBlocBuilder<TodoDetailsBlocType, TodoEntity>(
+          state: (bloc) => bloc.states.updatedTodo,
+          builder: (context, snapshot, bloc) => FloatingActionButton(
+            onPressed: () => context.read<NavigationBlocType>().events.navigate(
+                  NavigationParams(
+                    navigationEnum: NavigationEnum.addTodo,
+                    extraParametars: snapshot.data ?? todo,
+                  ),
                 ),
-              ),
-          child: Icon(context.designSystem.icons.edit),
+            child: Icon(context.designSystem.icons.edit),
+          ),
         ),
       );
 }

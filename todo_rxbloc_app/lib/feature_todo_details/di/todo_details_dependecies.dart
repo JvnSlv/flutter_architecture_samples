@@ -25,6 +25,7 @@ class TodoDetialsDependecies {
       create: (context) => TodoDetailsBloc(
         navigationBloc: context.read(),
         coordinatorBloc: context.read(),
+        todoService: context.read(),
       ),
     )
   ];

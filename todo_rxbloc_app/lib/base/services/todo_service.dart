@@ -6,11 +6,11 @@ class TodoService {
 
   Stream<List<TodoEntity>> getTodos() => _repository.todos();
 
-  Future<void> updateTodo(TodoEntity todoEntity) =>
-      _repository.updateTodo(todoEntity);
+  Future<TodoEntity> updateTodo(TodoEntity todoEntity) =>
+      _repository.updateTodo(todoEntity).then((value) => todoEntity);
 
-  Future<void> delteTodo(TodoEntity todoEntity) =>
-      _repository.deleteTodo([todoEntity.id]);
+  Future<TodoEntity> delteTodo(TodoEntity todoEntity) =>
+      _repository.deleteTodo([todoEntity.id]).then((value) => todoEntity);
 
   Future<void> addTodo(TodoEntity todoEntity) =>
       _repository.addNewTodo(todoEntity);

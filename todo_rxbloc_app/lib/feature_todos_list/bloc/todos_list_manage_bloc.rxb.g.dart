@@ -41,6 +41,12 @@ abstract class $TodosListManageBloc extends RxBlocBase
   /// The state of [todoAdded] implemented in [_mapToTodoAddedState]
   late final ConnectableStream<void> _todoAddedState = _mapToTodoAddedState();
 
+  /// The state of [isLoading] implemented in [_mapToIsLoadingState]
+  late final Stream<bool> _isLoadingState = _mapToIsLoadingState();
+
+  /// The state of [errors] implemented in [_mapToErrorsState]
+  late final Stream<String> _errorsState = _mapToErrorsState();
+
   @override
   void addTodo(TodoEntity todo) => _$addTodoEvent.add(todo);
 
@@ -59,11 +65,21 @@ abstract class $TodosListManageBloc extends RxBlocBase
   @override
   ConnectableStream<void> get todoAdded => _todoAddedState;
 
+  @override
+  Stream<bool> get isLoading => _isLoadingState;
+
+  @override
+  Stream<String> get errors => _errorsState;
+
   Stream<TodoEntity> _mapToTodoDeletedState();
 
   ConnectableStream<void> _mapToTodoUpdatedState();
 
   ConnectableStream<void> _mapToTodoAddedState();
+
+  Stream<bool> _mapToIsLoadingState();
+
+  Stream<String> _mapToErrorsState();
 
   @override
   TodosListManageBlocEvents get events => this;
