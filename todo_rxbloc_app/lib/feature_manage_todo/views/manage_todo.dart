@@ -77,7 +77,9 @@ class _ManageTodoPageState extends State<ManageTodoPage> {
         ),
         floatingActionButton: AddTodoToastMessage(
           child: FloatingActionButton(
-            child: const Icon(Icons.add),
+            child: widget.todo != null
+                ? Icon(context.designSystem.icons.edit)
+                : Icon(context.designSystem.icons.plusSign),
             onPressed: () =>
                 context.read<ManageTodoBlocType>().events.saveTodo(),
           ),
