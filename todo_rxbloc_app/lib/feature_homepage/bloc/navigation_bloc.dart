@@ -24,33 +24,35 @@ class NavigationBloc extends $NavigationBloc {
   @override
   Stream<NavigationParams> _mapToGetPageIndexState() =>
       _$navigateEvent.doOnData((event) {
-        switch (event.navigationEnum) {
-          case NavigationEnum.todosList:
-            router.go(const TodoListRoute().location);
-            break;
-          case NavigationEnum.stats:
-            router.go(const StatsRoute().location);
-            break;
-          case NavigationEnum.addTodo:
-            if (event.extraParametars != null) {
-              final TodoEntity todo = event.extraParametars as TodoEntity;
-              router.push(ManageTodoRoute().location, extra: todo);
-            } else {
-              router.push(
-                ManageTodoRoute().location,
-              );
-            }
+        if (event.navigationEnum.name != router.location.substring(1)) {
+          switch (event.navigationEnum) {
+            case NavigationEnum.list:
+              router.go(const TodoListRoute().location);
+              break;
+            case NavigationEnum.stats:
+              router.go(const StatsRoute().location);
+              break;
+            case NavigationEnum.addTodo:
+              if (event.extraParametars != null) {
+                final TodoEntity todo = event.extraParametars as TodoEntity;
+                router.push(ManageTodoRoute().location, extra: todo);
+              } else {
+                router.push(
+                  ManageTodoRoute().location,
+                );
+              }
 
-            break;
-          case NavigationEnum.todoDetails:
-            if (event.extraParametars != null) {
-              final TodoEntity todo = event.extraParametars as TodoEntity;
-              router.push(TodoDetailsRoute(todo.id).location, extra: todo);
-            }
-            break;
-          case NavigationEnum.pop:
-            router.pop();
-            break;
+              break;
+            case NavigationEnum.todoDetails:
+              if (event.extraParametars != null) {
+                final TodoEntity todo = event.extraParametars as TodoEntity;
+                router.push(TodoDetailsRoute(todo.id).location, extra: todo);
+              }
+              break;
+            case NavigationEnum.pop:
+              router.pop();
+              break;
+          }
         }
       });
 }

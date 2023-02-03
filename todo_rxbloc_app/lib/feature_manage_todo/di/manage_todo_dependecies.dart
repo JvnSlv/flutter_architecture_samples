@@ -3,7 +3,6 @@ import 'package:flutter_rx_bloc/flutter_rx_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:todos_repository_core/todos_repository_core.dart';
-import 'package:uuid/uuid.dart';
 
 import '../bloc/manage_todo_bloc.dart';
 
@@ -26,8 +25,7 @@ class ManageTodoDependecies {
   List<SingleChildWidget> get _blocs => [
         RxBlocProvider<ManageTodoBlocType>(
           create: (context) => ManageTodoBloc(
-            todoService: context.read(),
-            uuid: const Uuid(),
+            manageTodoService: context.read(),
             navigationBloc: context.read(),
             coordinatorBloc: context.read(),
             todo: todo,

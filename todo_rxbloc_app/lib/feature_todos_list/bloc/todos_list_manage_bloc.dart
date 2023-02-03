@@ -54,14 +54,12 @@ class TodosListManageBloc extends $TodosListManageBloc {
 
   @override
   Stream<TodoEntity> _mapToTodoDeletedState() => _$deleteTodoEvent
-      .switchMap((todo) => todoService
-          .delteTodo(todo)
-          .whenComplete(
-            () => navigationBloc.events.navigate(
-              const NavigationParams(navigationEnum: NavigationEnum.todosList),
-            ),
-          )
-          .asResultStream())
+      .switchMap((todo) => todoService.delteTodo(todo).asResultStream())
+      .doOnData(
+        (value) => navigationBloc.events.navigate(
+          const NavigationParams(navigationEnum: NavigationEnum.list),
+        ),
+      )
       .setResultStateHandler(this)
       .whereSuccess();
 

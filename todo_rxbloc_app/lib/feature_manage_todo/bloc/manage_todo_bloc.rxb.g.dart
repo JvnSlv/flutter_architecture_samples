@@ -28,6 +28,9 @@ abstract class $ManageTodoBloc extends RxBlocBase
   /// Тhe [Subject] where events sink to by calling [saveTodo]
   final _$saveTodoEvent = PublishSubject<void>();
 
+  /// Тhe [Subject] where events sink to by calling [updateTodo]
+  final _$updateTodoEvent = PublishSubject<void>();
+
   /// The state of [validateTitle] implemented in [_mapToValidateTitleState]
   late final Stream<String> _validateTitleState = _mapToValidateTitleState();
 
@@ -52,6 +55,9 @@ abstract class $ManageTodoBloc extends RxBlocBase
 
   @override
   void saveTodo() => _$saveTodoEvent.add(null);
+
+  @override
+  void updateTodo() => _$updateTodoEvent.add(null);
 
   @override
   Stream<String> get validateTitle => _validateTitleState;
@@ -89,6 +95,7 @@ abstract class $ManageTodoBloc extends RxBlocBase
     _$setTitleEvent.close();
     _$setDescriptionEvent.close();
     _$saveTodoEvent.close();
+    _$updateTodoEvent.close();
     _compositeSubscription.dispose();
     super.dispose();
   }

@@ -1,13 +1,12 @@
 import 'package:rx_bloc/rx_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:todos_repository_core/todos_repository_core.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../base/common_blocs/coordinator_bloc.dart';
 import '../../base/enums/current_page_enum.dart';
 import '../../base/enums/new_todo_enum.dart';
 import '../../base/models/navigation_parametars.dart';
-import '../../base/services/todo_service.dart';
+import '../../base/services/manage_todo_service.dart';
 import '../../feature_homepage/bloc/navigation_bloc.dart';
 
 part 'manage_todo_bloc.rxb.g.dart';
@@ -21,6 +20,7 @@ abstract class ManageTodoBlocEvents {
   @RxBlocEvent(type: RxBlocEventType.behaviour, seed: '')
   void setDescription(String description);
   void saveTodo();
+  void updateTodo();
 }
 
 /// A contract class containing all states of the ManageTodoBloC.
@@ -36,9 +36,8 @@ abstract class ManageTodoBlocStates {
 class ManageTodoBloc extends $ManageTodoBloc {
   ManageTodoBloc({
     required this.navigationBloc,
-    required this.uuid,
-    required this.todoService,
     required this.coordinatorBloc,
+    required this.manageTodoService,
     TodoEntity? todo,
   }) : _todo = todo {
     if (todo != null) {
@@ -46,29 +45,37 @@ class ManageTodoBloc extends $ManageTodoBloc {
       _$setDescriptionEvent.add(todo.note);
     }
   }
-  final TodoService todoService;
-  final Uuid uuid;
+
   final NavigationBlocType navigationBloc;
   final CoordinatorBlocType coordinatorBloc;
   final TodoEntity? _todo;
+  final ManageTodoService manageTodoService;
 
   @override
   Stream<String> _mapToValidateTitleState() => _$setTitleEvent;
 
   @override
-  Stream<NewTodoEnum> _mapToNewTodoState() => _$saveTodoEvent
-      .createTodo(
-        todoService,
-        _$setTitleEvent.startWith(''),
-        _$setDescriptionEvent,
-        uuid,
-        navigationBloc,
-        this,
-        _todo,
-        coordinatorBloc,
-      )
-      .shareReplay()
-      .asBroadcastStream();
+  Stream<NewTodoEnum> _mapToNewTodoState() => Rx.merge([
+        _$saveTodoEvent.createTodo(
+          _$setTitleEvent.startWith(''),
+          _$setDescriptionEvent,
+          navigationBloc,
+          manageTodoService,
+        ),
+        _$updateTodoEvent.updateTodo(
+          _$setTitleEvent.startWith(''),
+          _$setDescriptionEvent,
+          navigationBloc,
+          _todo,
+          coordinatorBloc,
+          manageTodoService,
+        )
+      ])
+          .asResultStream()
+          .setResultStateHandler(this)
+          .whereSuccess()
+          .shareReplay()
+          .asBroadcastStream();
 
   @override
   Stream<String> _mapToGetDescriptionState() =>

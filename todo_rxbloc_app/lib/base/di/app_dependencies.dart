@@ -11,11 +11,13 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todos_repository_local_storage/todos_repository_local_storage.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../feature_homepage/bloc/navigation_bloc.dart';
 import '../app/config/environment_config.dart';
 import '../common_blocs/coordinator_bloc.dart';
 import '../routers/router.dart';
+import '../services/manage_todo_service.dart';
 import '../services/todo_service.dart';
 import '../utils/constants.dart';
 import '../utils/todos_data.dart';
@@ -77,6 +79,12 @@ class AppDependencies {
                 SharedPreferences.getInstance(),
               ),
             ),
+          ),
+        ),
+        Provider<ManageTodoService>(
+          create: (context) => ManageTodoService(
+            context.read(),
+            const Uuid(),
           ),
         ),
       ];
