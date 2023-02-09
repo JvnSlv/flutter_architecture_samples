@@ -8,6 +8,7 @@ import '../../base/enums/current_page_enum.dart';
 import '../../base/models/navigation_parametars.dart';
 import '../bloc/todos_list_bloc.dart';
 import '../bloc/todos_list_manage_bloc.dart';
+import '../components/popup_menu_actions.dart';
 import '../components/todo_list_tile.dart';
 
 class TodosListPage extends StatelessWidget {
@@ -22,6 +23,7 @@ class TodosListPage extends StatelessWidget {
             child: Scaffold(
               appBar: AppBar(
                 title: Text(context.l10n.featureTodosList.todosListAppBarTitle),
+                actions: const [PopupMenuActions()],
               ),
               body: RxResultBuilder<TodosListBlocType, List<TodoEntity>>(
                 state: (bloc) => bloc.states.todosList,

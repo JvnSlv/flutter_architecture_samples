@@ -17,6 +17,9 @@ abstract class TodosListBlocEvents {
 abstract class TodosListBlocStates {
   Stream<Result<List<TodoEntity>>> get todosList;
   Stream<NavigationParams> get navigate;
+
+  // Stream<bool> get isLoading;
+  // Stream<String> get errors;
 }
 
 @RxBloc()
@@ -31,16 +34,20 @@ class TodosListBloc extends $TodosListBloc {
   Stream<Result<List<TodoEntity>>> _mapToTodosListState() =>
       _$fetchTodosListEvent
           .startWith(null)
-          .switchMap(
-            (value) => todoService.getTodos(),
-          )
+          .switchMap((value) => todoService.getTodos())
           .distinct()
           .shareReplay(maxSize: 1)
           .asResultStream();
-
   @override
   Stream<NavigationParams> _mapToNavigateState() =>
       _$navigateToPageEvent.doOnData((event) {
         navigationBloc.events.navigate(event);
       });
+
+  // @override
+  // Stream<String> _mapToErrorsState() =>
+  //     errorState.map((Exception error) => error.toString());
+
+  // @override
+  // Stream<bool> _mapToIsLoadingState() => loadingState;
 }
