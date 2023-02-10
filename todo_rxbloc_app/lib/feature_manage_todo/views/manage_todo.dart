@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rx_bloc/flutter_rx_bloc.dart';
+import 'package:flutter_rx_bloc/rx_form.dart';
 import 'package:provider/provider.dart';
 import 'package:todos_repository_core/todos_repository_core.dart';
 
@@ -19,11 +20,9 @@ class _ManageTodoPageState extends State<ManageTodoPage> {
   @override
   void initState() {
     noteController.text = widget.todo?.note ?? '';
-    taskController.text = widget.todo?.task ?? '';
     super.initState();
   }
 
-  final TextEditingController taskController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,7 @@ class _ManageTodoPageState extends State<ManageTodoPage> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Column(
         children: [
-          _someToastMessage(context),
+          _successToastMessages(context),
           Expanded(
             child: Scaffold(
               appBar: AppBar(
@@ -45,20 +44,24 @@ class _ManageTodoPageState extends State<ManageTodoPage> {
                             context.designSystem.spacing.space16),
                         child: Column(
                           children: [
-                            RxBlocBuilder<ManageTodoBlocType, String>(
+                            SizedBox(
+                                height: context.designSystem.spacing.space25),
+                            RxTextFormFieldBuilder<ManageTodoBlocType>(
+                              cursorBehaviour:
+                                  RxTextFormFieldCursorBehaviour.preserve,
                               state: (bloc) => bloc.states.validateTitle,
-                              builder: (context, snapshot, bloc) =>
-                                  TextFormField(
-                                autofocus: true,
-                                onChanged: (title) =>
-                                    bloc.events.setTitle(title.trim()),
-                                controller: taskController,
-                                decoration: InputDecoration(
-                                  errorText: (snapshot.data == '')
-                                      ? context
-                                          .l10n.featureAddTodo.todoTaskError
-                                      : null,
-                                  hintText: context.l10n.featureAddTodo.task,
+                              showErrorState: (bloc) => bloc.states.showErrors,
+                              onChanged: (bloc, task) => bloc.events.setTitle(
+                                task.trim(),
+                              ),
+                              builder: (fieldState) => TextFormField(
+                                autofocus: widget.todo == null ? true : false,
+                                controller: fieldState.controller,
+                                decoration:
+                                    fieldState.decoration.copyWithDecoration(
+                                  InputDecoration(
+                                    hintText: context.l10n.featureAddTodo.task,
+                                  ),
                                 ),
                                 style: Theme.of(context).textTheme.headline5,
                               ),
@@ -102,11 +105,10 @@ class _ManageTodoPageState extends State<ManageTodoPage> {
   @override
   void dispose() {
     noteController.dispose();
-    taskController.dispose();
     super.dispose();
   }
 
-  Widget _someToastMessage(BuildContext context) =>
+  Widget _successToastMessages(BuildContext context) =>
       RxBlocListener<ManageTodoBlocType, NewTodoEnum>(
         state: (bloc) => bloc.states.newTodo,
         listener: (context, state) {
@@ -120,14 +122,6 @@ class _ManageTodoPageState extends State<ManageTodoPage> {
               );
               break;
             case NewTodoEnum.newTodoError:
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    context.l10n.featureAddTodo.todoCreatedError,
-                  ),
-                  duration: const Duration(seconds: 1),
-                ),
-              );
               break;
             case NewTodoEnum.editTodoSuccess:
               ScaffoldMessenger.of(context).showSnackBar(
