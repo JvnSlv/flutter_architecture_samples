@@ -10,14 +10,18 @@ class TodoService {
   final ReactiveTodosRepository _repository;
 
   Stream<List<TodoEntity>> getTodos(FilterEnum filterValue) {
-    if (filterValue.value != null) {
-      return _repository.todos().map(
-            (event) => event
-                .where((element) => element.complete == filterValue.value)
-                .toList(),
-          );
-    } else {
-      return _repository.todos();
+    switch (filterValue) {
+      case FilterEnum.showAll:
+        return _repository.todos();
+      case FilterEnum.showActive:
+      case FilterEnum.showCompleted:
+        return _repository.todos().map(
+              (event) => event
+                  .where((element) => element.complete == filterValue.value)
+                  .toList(),
+            );
+      default:
+        return _repository.todos();
     }
   }
 
