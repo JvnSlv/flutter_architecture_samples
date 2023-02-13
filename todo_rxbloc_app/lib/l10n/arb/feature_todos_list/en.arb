@@ -9,5 +9,8 @@
   "undo":"Undo",
   "markAllActive":"Mark all active",
   "markAllDone":"Mark all completed",
-  "removeDone":"Remove completed"
+  "removeDone":"Remove completed",
+  "showAll":"Show all",
+  "showActive":"Show active",
+  "showCompleted":"Show completed"
 }
