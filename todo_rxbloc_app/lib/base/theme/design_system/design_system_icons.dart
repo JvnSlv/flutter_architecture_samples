@@ -28,4 +28,12 @@ class DesignSystemIcons {
   final trending = Icons.trending_up;
 
   final list = Icons.list;
+
+  final edit = Icons.edit;
+
+  final delete = Icons.delete;
+
+  final moreVertical = Icons.more_vert;
+
+  final filter = Icons.filter_list;
 }

@@ -5,7 +5,6 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-
 import 'package:flutter/material.dart';
 
 // Material Design System documentation.
@@ -65,6 +64,8 @@ class DesignSystemColors {
   final black = Colors.black87;
 
   final gray = const Color(0xff808080);
+
+  final cyan = const Color(0xFF4DD0E1);
 
   ///
 }

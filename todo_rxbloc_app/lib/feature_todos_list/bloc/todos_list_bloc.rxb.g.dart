@@ -22,77 +22,47 @@ abstract class $TodosListBloc extends RxBlocBase
   /// Тhe [Subject] where events sink to by calling [fetchTodosList]
   final _$fetchTodosListEvent = PublishSubject<void>();
 
-  /// Тhe [Subject] where events sink to by calling [updateTodo]
-  final _$updateTodoEvent = PublishSubject<TodoEntity>();
-
-  /// Тhe [Subject] where events sink to by calling [deleteTodo]
-  final _$deleteTodoEvent = PublishSubject<TodoEntity>();
-
-  /// Тhe [Subject] where events sink to by calling [addTodo]
-  final _$addTodoEvent = PublishSubject<TodoEntity>();
-
   /// Тhe [Subject] where events sink to by calling [navigateToPage]
-  final _$navigateToPageEvent = PublishSubject<NavigationParametars>();
+  final _$navigateToPageEvent = PublishSubject<NavigationParams>();
+
+  /// Тhe [Subject] where events sink to by calling [filterMenuAction]
+  final _$filterMenuActionEvent = PublishSubject<FilterEnum>();
 
   /// The state of [todosList] implemented in [_mapToTodosListState]
   late final Stream<Result<List<TodoEntity>>> _todosListState =
       _mapToTodosListState();
 
-  /// The state of [updatedTodo] implemented in [_mapToUpdatedTodoState]
-  late final ConnectableStream<void> _updatedTodoState =
-      _mapToUpdatedTodoState();
-
-  /// The state of [addedTodo] implemented in [_mapToAddedTodoState]
-  late final ConnectableStream<void> _addedTodoState = _mapToAddedTodoState();
-
-  /// The state of [isTodoDeleted] implemented in [_mapToIsTodoDeletedState]
-  late final Stream<TodoEntity> _isTodoDeletedState =
-      _mapToIsTodoDeletedState();
-
   /// The state of [navigate] implemented in [_mapToNavigateState]
-  late final Stream<NavigationParametars> _navigateState =
-      _mapToNavigateState();
+  late final Stream<NavigationParams> _navigateState = _mapToNavigateState();
+
+  /// The state of [filterValue] implemented in [_mapToFilterValueState]
+  late final Stream<FilterEnum> _filterValueState = _mapToFilterValueState();
 
   @override
   void fetchTodosList() => _$fetchTodosListEvent.add(null);
 
   @override
-  void updateTodo(TodoEntity todo) => _$updateTodoEvent.add(todo);
-
-  @override
-  void deleteTodo(TodoEntity todo) => _$deleteTodoEvent.add(todo);
-
-  @override
-  void addTodo(TodoEntity todo) => _$addTodoEvent.add(todo);
-
-  @override
-  void navigateToPage(NavigationParametars navigationParametars) =>
+  void navigateToPage(NavigationParams navigationParametars) =>
       _$navigateToPageEvent.add(navigationParametars);
+
+  @override
+  void filterMenuAction(FilterEnum filterEnum) =>
+      _$filterMenuActionEvent.add(filterEnum);
 
   @override
   Stream<Result<List<TodoEntity>>> get todosList => _todosListState;
 
   @override
-  ConnectableStream<void> get updatedTodo => _updatedTodoState;
+  Stream<NavigationParams> get navigate => _navigateState;
 
   @override
-  ConnectableStream<void> get addedTodo => _addedTodoState;
-
-  @override
-  Stream<TodoEntity> get isTodoDeleted => _isTodoDeletedState;
-
-  @override
-  Stream<NavigationParametars> get navigate => _navigateState;
+  Stream<FilterEnum> get filterValue => _filterValueState;
 
   Stream<Result<List<TodoEntity>>> _mapToTodosListState();
 
-  ConnectableStream<void> _mapToUpdatedTodoState();
+  Stream<NavigationParams> _mapToNavigateState();
 
-  ConnectableStream<void> _mapToAddedTodoState();
-
-  Stream<TodoEntity> _mapToIsTodoDeletedState();
-
-  Stream<NavigationParametars> _mapToNavigateState();
+  Stream<FilterEnum> _mapToFilterValueState();
 
   @override
   TodosListBlocEvents get events => this;
@@ -103,10 +73,8 @@ abstract class $TodosListBloc extends RxBlocBase
   @override
   void dispose() {
     _$fetchTodosListEvent.close();
-    _$updateTodoEvent.close();
-    _$deleteTodoEvent.close();
-    _$addTodoEvent.close();
     _$navigateToPageEvent.close();
+    _$filterMenuActionEvent.close();
     _compositeSubscription.dispose();
     super.dispose();
   }

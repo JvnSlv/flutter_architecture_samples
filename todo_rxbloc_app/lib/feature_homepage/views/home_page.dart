@@ -18,12 +18,12 @@ class HomePage extends StatelessWidget {
     switch (pageIndex) {
       case 0:
         context.read<NavigationBlocType>().events.navigate(
-            const NavigationParametars(
-                navigationEnum: NavigationEnum.todosList));
+              const NavigationParams(navigationEnum: NavigationEnum.list),
+            );
         break;
       case 1:
         context.read<NavigationBlocType>().events.navigate(
-              const NavigationParametars(navigationEnum: NavigationEnum.stats),
+              const NavigationParams(navigationEnum: NavigationEnum.stats),
             );
         break;
     }
@@ -31,16 +31,16 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      RxBlocBuilder<NavigationBlocType, NavigationParametars>(
+      RxBlocBuilder<NavigationBlocType, NavigationParams>(
         state: (bloc) => bloc.states.getPageIndex,
         builder: (context, snapshot, bloc) => Scaffold(
           body: child,
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: (snapshot.hasData
                     ? snapshot.data!.navigationEnum.index > 1
-                        ? NavigationEnum.todosList
+                        ? NavigationEnum.list
                         : snapshot.data!.navigationEnum
-                    : NavigationEnum.todosList)
+                    : NavigationEnum.list)
                 .index,
             selectedItemColor: Theme.of(context).colorScheme.secondary,
             onTap: (pageIndex) => _onTap(context, pageIndex),

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:todos_repository_core/todos_repository_core.dart';
 
 import '../../app_extensions.dart';
-import '../bloc/todos_list_bloc.dart';
+import '../bloc/todos_list_manage_bloc.dart';
 
 class DeleteSuccessToast extends StatelessWidget {
   const DeleteSuccessToast({super.key, required this.child});
@@ -12,15 +12,15 @@ class DeleteSuccessToast extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RxBlocListener<TodosListBlocType, TodoEntity>(
-      state: (bloc) => bloc.states.isTodoDeleted,
+    return RxBlocListener<TodosListManageBlocType, TodoEntity>(
+      state: (bloc) => bloc.states.todoDeleted,
       listener: (context, todo) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: DeleteToast(
               todo: todo,
               onTap: () {
-                context.read<TodosListBlocType>().events.addTodo(todo);
+                context.read<TodosListManageBlocType>().events.addTodo(todo);
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
               },
             ),

@@ -2,6 +2,7 @@ import 'package:rx_bloc/rx_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:todos_repository_core/todos_repository_core.dart';
 
+import '../../base/enums/filter_enum.dart';
 import '../../base/services/todo_service.dart';
 
 part 'stats_bloc.rxb.g.dart';
@@ -25,7 +26,7 @@ class StatsBloc extends $StatsBloc {
   @override
   Stream<Result<List<TodoEntity>>> _mapToGetTodoListState() => _$fetchTodosEvent
       .startWith(null)
-      .switchMap((value) => todoService.getTodos())
+      .switchMap((value) => todoService.getTodos(FilterEnum.showAll))
       .shareReplay()
       .asResultStream();
 }

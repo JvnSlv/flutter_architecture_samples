@@ -6,5 +6,11 @@
   },
   "listOfTodos":"List of Todos",
   "successDelete":"deleted successfully",
-  "undo":"Undo"
+  "undo":"Undo",
+  "markAllActive":"Mark all active",
+  "markAllDone":"Mark all completed",
+  "removeDone":"Remove completed",
+  "showAll":"Show all",
+  "showActive":"Show active",
+  "showCompleted":"Show completed"
 }

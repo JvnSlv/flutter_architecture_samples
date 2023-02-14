@@ -1,0 +1,16 @@
+{
+  "@@locale": "es",
+  "addTodoAppBarTitle": "Add Todo",
+  "@addTodoAppBarTitle": {
+    "description": "Add Todo"
+  },
+  "addTodo":"Add New Todo",
+  "task":"Add New Task",
+  "note":"Add description",
+  "todoTaskError":"Todo Task cannot be empty",
+  "todoDescriptionError":"Todo description cannot be empty",
+  "todoCreatedSuccess":"Todo created successfully",
+  "todoCreatedError":"An error occured, title must have value",
+  "emptyText":"",
+  "todoEditSuccess":"Todo updated successfully"
+}

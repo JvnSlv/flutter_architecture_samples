@@ -1,8 +1,11 @@
 {
-  "@@locale": "es",
-  "statsAppBarTitle": "Stats",
-  "@statsAppBarTitle": {
-    "description": "Stats"
+  "@@locale": "en",
+  "todoDetailsAppBarTitle": "Todo Details",
+  "@todoDetailsAppBarTitle": {
+    "description": "Todo Details"
   },
-  "stats":"Stats"
+  "todoDetails":"Todo Details",
+  "successDelete":"deleted successfully",
+  "undo":"Undo",
+  "delete":"Delete"
 }

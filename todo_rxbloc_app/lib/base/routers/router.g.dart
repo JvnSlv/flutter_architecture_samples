@@ -16,8 +16,8 @@ GoRoute get $todoListRoute => GoRouteData.$route(
       factory: $TodoListRouteExtension._fromState,
       routes: [
         GoRouteData.$route(
-          path: 'addTodo',
-          factory: $AddTodoRouteExtension._fromState,
+          path: 'manageTodo',
+          factory: $ManageTodoRouteExtension._fromState,
         ),
         GoRouteData.$route(
           path: 'todoDetails/:id',
@@ -38,11 +38,13 @@ extension $TodoListRouteExtension on TodoListRoute {
   void push(BuildContext context) => context.push(location, extra: this);
 }
 
-extension $AddTodoRouteExtension on AddTodoRoute {
-  static AddTodoRoute _fromState(GoRouterState state) => const AddTodoRoute();
+extension $ManageTodoRouteExtension on ManageTodoRoute {
+  static ManageTodoRoute _fromState(GoRouterState state) => ManageTodoRoute(
+        $extra: state.extra as TodoEntity?,
+      );
 
   String get location => GoRouteData.$location(
-        '/list/addTodo',
+        '/list/manageTodo',
       );
 
   void go(BuildContext context) => context.go(location, extra: this);
