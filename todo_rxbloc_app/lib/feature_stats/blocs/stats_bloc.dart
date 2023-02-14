@@ -1,9 +1,9 @@
 import 'package:rx_bloc/rx_bloc.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:todos_repository_core/todos_repository_core.dart';
 
 import '../../base/enums/filter_enum.dart';
 import '../../base/services/todo_service.dart';
+import '../models/todo_stats.dart';
 
 part 'stats_bloc.rxb.g.dart';
 part 'stats_bloc_extensions.dart';
@@ -15,7 +15,7 @@ abstract class StatsBlocEvents {
 
 /// A contract class containing all states of the StatsBloC.
 abstract class StatsBlocStates {
-  Stream<Result<List<TodoEntity>>> get getTodoList;
+  Stream<Result<TodoStats>> get getTodoList;
 }
 
 @RxBloc()
@@ -24,9 +24,18 @@ class StatsBloc extends $StatsBloc {
 
   StatsBloc({required this.todoService});
   @override
-  Stream<Result<List<TodoEntity>>> _mapToGetTodoListState() => _$fetchTodosEvent
+  Stream<Result<TodoStats>> _mapToGetTodoListState() => _$fetchTodosEvent
       .startWith(null)
-      .switchMap((value) => todoService.getTodos(FilterEnum.showAll))
+      .switchMap((value) {
+        return todoService.getTodos(FilterEnum.showAll).map(
+              (event) => TodoStats(
+                completedTodos:
+                    event.where((element) => element.complete == true).length,
+                activeTodos:
+                    event.where((element) => element.complete == false).length,
+              ),
+            );
+      })
       .shareReplay()
       .asResultStream();
 }

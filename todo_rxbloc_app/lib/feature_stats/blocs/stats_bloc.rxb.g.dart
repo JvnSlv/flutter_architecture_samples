@@ -23,16 +23,16 @@ abstract class $StatsBloc extends RxBlocBase
   final _$fetchTodosEvent = PublishSubject<void>();
 
   /// The state of [getTodoList] implemented in [_mapToGetTodoListState]
-  late final Stream<Result<List<TodoEntity>>> _getTodoListState =
+  late final Stream<Result<TodoStats>> _getTodoListState =
       _mapToGetTodoListState();
 
   @override
   void fetchTodos() => _$fetchTodosEvent.add(null);
 
   @override
-  Stream<Result<List<TodoEntity>>> get getTodoList => _getTodoListState;
+  Stream<Result<TodoStats>> get getTodoList => _getTodoListState;
 
-  Stream<Result<List<TodoEntity>>> _mapToGetTodoListState();
+  Stream<Result<TodoStats>> _mapToGetTodoListState();
 
   @override
   StatsBlocEvents get events => this;
