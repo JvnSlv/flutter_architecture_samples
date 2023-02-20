@@ -5,7 +5,7 @@ import 'package:todos_repository_core/todos_repository_core.dart';
 import '../../base/common_blocs/coordinator_bloc.dart';
 import '../../base/enums/current_page_enum.dart';
 import '../../base/enums/options_menu_enum.dart';
-import '../../base/models/navigation_parametars.dart';
+import '../../base/models/navigation_parameters.dart';
 import '../../base/services/todo_service.dart';
 import '../../feature_homepage/bloc/navigation_bloc.dart';
 
@@ -21,7 +21,7 @@ abstract class TodosListManageBlocEvents {
   @RxBlocEvent(
       type: RxBlocEventType.behaviour, seed: OptionsMenuEnum.markAllComplete)
   void markAll(OptionsMenuEnum option);
-  void deleteMarkerd();
+  void deleteMarked();
 }
 
 /// A contract class containing all states of the TodosListManageBloC.
@@ -55,7 +55,7 @@ class TodosListManageBloc extends $TodosListManageBloc {
         .addTo(_compositeSubscription);
   }
   @override
-  ConnectableStream<void> _mapToDeleteMarkedTodosState() => _$deleteMarkerdEvent
+  ConnectableStream<void> _mapToDeleteMarkedTodosState() => _$deleteMarkedEvent
       .withLatestFrom<List<TodoEntity>, List<TodoEntity>>(
           todosList, (_, todos) => todos)
       .switchMap((value) => todoService
@@ -80,7 +80,7 @@ class TodosListManageBloc extends $TodosListManageBloc {
 
   @override
   Stream<TodoEntity> _mapToTodoDeletedState() => _$deleteTodoEvent
-      .switchMap((todo) => todoService.delteTodo(todo).asResultStream())
+      .switchMap((todo) => todoService.deleteTodo(todo).asResultStream())
       .doOnData(
         (value) => navigationBloc.events.navigate(
           const NavigationParams(navigationEnum: NavigationEnum.list),
@@ -107,14 +107,12 @@ class TodosListManageBloc extends $TodosListManageBloc {
 
   @override
   Stream<OptionsMenuEnum> _mapToMarkTodosCompleteState() => Rx.merge([
-        Rx.combineLatest2<OptionsMenuEnum, List<TodoEntity>, ReturnValues>(
-            _$markAllEvent,
-            todosList,
-            (menu, todos) => ReturnValues(todos, menu)).switchMap((value) {
-          if (value.todos.any((element) => element.complete == false)) {
-            return Stream.value(OptionsMenuEnum.markAllIncomplete);
+        Rx.combineLatest2<OptionsMenuEnum, List<TodoEntity>, OptionsMenuEnum>(
+            _$markAllEvent, todosList, (menu, todos) {
+          if (todos.any((element) => element.complete == false)) {
+            return OptionsMenuEnum.markAllIncomplete;
           } else {
-            return Stream.value(OptionsMenuEnum.markAllComplete);
+            return OptionsMenuEnum.markAllComplete;
           }
         }),
         _$markAllEvent

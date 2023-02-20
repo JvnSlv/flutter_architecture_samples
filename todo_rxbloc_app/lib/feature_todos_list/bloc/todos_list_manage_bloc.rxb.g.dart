@@ -38,8 +38,8 @@ abstract class $TodosListManageBloc extends RxBlocBase
   final _$markAllEvent =
       BehaviorSubject<OptionsMenuEnum>.seeded(OptionsMenuEnum.markAllComplete);
 
-  /// Тhe [Subject] where events sink to by calling [deleteMarkerd]
-  final _$deleteMarkerdEvent = PublishSubject<void>();
+  /// Тhe [Subject] where events sink to by calling [deleteMarked]
+  final _$deleteMarkedEvent = PublishSubject<void>();
 
   /// The state of [todoDeleted] implemented in [_mapToTodoDeletedState]
   late final Stream<TodoEntity> _todoDeletedState = _mapToTodoDeletedState();
@@ -87,7 +87,7 @@ abstract class $TodosListManageBloc extends RxBlocBase
   void markAll(OptionsMenuEnum option) => _$markAllEvent.add(option);
 
   @override
-  void deleteMarkerd() => _$deleteMarkerdEvent.add(null);
+  void deleteMarked() => _$deleteMarkedEvent.add(null);
 
   @override
   Stream<TodoEntity> get todoDeleted => _todoDeletedState;
@@ -142,7 +142,7 @@ abstract class $TodosListManageBloc extends RxBlocBase
     _$deleteTodoEvent.close();
     _$getTodosListEvent.close();
     _$markAllEvent.close();
-    _$deleteMarkerdEvent.close();
+    _$deleteMarkedEvent.close();
     _compositeSubscription.dispose();
     super.dispose();
   }

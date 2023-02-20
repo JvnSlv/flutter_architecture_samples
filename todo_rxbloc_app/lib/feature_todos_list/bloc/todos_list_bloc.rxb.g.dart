@@ -36,8 +36,8 @@ abstract class $TodosListBloc extends RxBlocBase
   void fetchTodosList() => _$fetchTodosListEvent.add(null);
 
   @override
-  void navigateToPage(NavigationParams navigationParametars) =>
-      _$navigateToPageEvent.add(navigationParametars);
+  void navigateToPage(NavigationParams navigationParams) =>
+      _$navigateToPageEvent.add(navigationParams);
 
   @override
   Stream<Result<List<TodoEntity>>> get todosList => _todosListState;

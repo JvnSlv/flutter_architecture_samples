@@ -5,7 +5,7 @@ import 'package:todos_repository_core/todos_repository_core.dart';
 
 import '../../app_extensions.dart';
 import '../../base/enums/current_page_enum.dart';
-import '../../base/models/navigation_parametars.dart';
+import '../../base/models/navigation_parameters.dart';
 import '../../feature_homepage/bloc/navigation_bloc.dart';
 import '../blocs/todo_details_bloc.dart';
 
@@ -83,7 +83,7 @@ class TodoDetailsPage extends StatelessWidget {
             onPressed: () => context.read<NavigationBlocType>().events.navigate(
                   NavigationParams(
                     navigationEnum: NavigationEnum.addTodo,
-                    extraParametars: snapshot.data ?? todo,
+                    extraParams: snapshot.data ?? todo,
                   ),
                 ),
             child: Icon(context.designSystem.icons.edit),

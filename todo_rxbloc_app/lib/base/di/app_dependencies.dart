@@ -73,7 +73,7 @@ class AppDependencies {
         Provider<TodoService>(
           create: (context) => TodoService(
             ReactiveLocalStorageRepository(
-              seedValue: listOfTods,
+              seedValue: listOfTodos,
               repository: KeyValueStorage(
                 TodoConstants.keyValueStorageKey,
                 SharedPreferences.getInstance(),
