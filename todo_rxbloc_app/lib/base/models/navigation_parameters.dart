@@ -2,10 +2,10 @@ import '../enums/current_page_enum.dart';
 
 class NavigationParams {
   final NavigationEnum navigationEnum;
-  final Object? extraParametars;
+  final Object? extraParams;
 
   const NavigationParams({
-    this.extraParametars,
+    this.extraParams,
     required this.navigationEnum,
   });
 }

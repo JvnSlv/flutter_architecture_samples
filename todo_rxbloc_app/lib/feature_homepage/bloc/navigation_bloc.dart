@@ -3,13 +3,13 @@ import 'package:rxdart/rxdart.dart';
 import 'package:todos_repository_core/todos_repository_core.dart';
 import '../../app_extensions.dart';
 import '../../base/enums/current_page_enum.dart';
-import '../../base/models/navigation_parametars.dart';
+import '../../base/models/navigation_parameters.dart';
 import '../../base/routers/router.dart';
 
 part 'navigation_bloc.rxb.g.dart';
 
 abstract class NavigationBlocEvents {
-  void navigate(NavigationParams navigationParametars);
+  void navigate(NavigationParams navigationParams);
 }
 
 abstract class NavigationBlocStates {
@@ -33,8 +33,8 @@ class NavigationBloc extends $NavigationBloc {
               router.go(const StatsRoute().location);
               break;
             case NavigationEnum.addTodo:
-              if (event.extraParametars != null) {
-                final TodoEntity todo = event.extraParametars as TodoEntity;
+              if (event.extraParams != null) {
+                final TodoEntity todo = event.extraParams as TodoEntity;
                 router.push(ManageTodoRoute().location, extra: todo);
               } else {
                 router.push(
@@ -44,8 +44,8 @@ class NavigationBloc extends $NavigationBloc {
 
               break;
             case NavigationEnum.todoDetails:
-              if (event.extraParametars != null) {
-                final TodoEntity todo = event.extraParametars as TodoEntity;
+              if (event.extraParams != null) {
+                final TodoEntity todo = event.extraParams as TodoEntity;
                 router.push(TodoDetailsRoute(todo.id).location, extra: todo);
               }
               break;

@@ -3,7 +3,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:todos_repository_core/todos_repository_core.dart';
 
 import '../../base/enums/filter_enum.dart';
-import '../../base/models/navigation_parametars.dart';
+import '../../base/models/navigation_parameters.dart';
 import '../../base/services/todo_service.dart';
 import '../../feature_homepage/bloc/navigation_bloc.dart';
 
@@ -12,9 +12,8 @@ part 'todos_list_bloc_extensions.dart';
 
 abstract class TodosListBlocEvents {
   void fetchTodosList();
-  void navigateToPage(NavigationParams navigationParametars);
-
   void filterMenuAction(FilterEnum filterEnum);
+  void navigateToPage(NavigationParams navigationParams);
 }
 
 abstract class TodosListBlocStates {
@@ -22,9 +21,6 @@ abstract class TodosListBlocStates {
   Stream<NavigationParams> get navigate;
 
   Stream<FilterEnum> get filterValue;
-
-  // Stream<bool> get isLoading;
-  // Stream<String> get errors;
 }
 
 @RxBloc()
@@ -54,11 +50,4 @@ class TodosListBloc extends $TodosListBloc {
       _$navigateToPageEvent.doOnData((event) {
         navigationBloc.events.navigate(event);
       });
-
-  // @override
-  // Stream<String> _mapToErrorsState() =>
-  //     errorState.map((Exception error) => error.toString());
-
-  // @override
-  // Stream<bool> _mapToIsLoadingState() => loadingState;
 }

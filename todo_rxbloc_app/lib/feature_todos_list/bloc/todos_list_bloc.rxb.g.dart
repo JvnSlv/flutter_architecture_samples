@@ -22,11 +22,11 @@ abstract class $TodosListBloc extends RxBlocBase
   /// Тhe [Subject] where events sink to by calling [fetchTodosList]
   final _$fetchTodosListEvent = PublishSubject<void>();
 
-  /// Тhe [Subject] where events sink to by calling [navigateToPage]
-  final _$navigateToPageEvent = PublishSubject<NavigationParams>();
-
   /// Тhe [Subject] where events sink to by calling [filterMenuAction]
   final _$filterMenuActionEvent = PublishSubject<FilterEnum>();
+
+  /// Тhe [Subject] where events sink to by calling [navigateToPage]
+  final _$navigateToPageEvent = PublishSubject<NavigationParams>();
 
   /// The state of [todosList] implemented in [_mapToTodosListState]
   late final Stream<Result<List<TodoEntity>>> _todosListState =
@@ -42,12 +42,12 @@ abstract class $TodosListBloc extends RxBlocBase
   void fetchTodosList() => _$fetchTodosListEvent.add(null);
 
   @override
-  void navigateToPage(NavigationParams navigationParametars) =>
-      _$navigateToPageEvent.add(navigationParametars);
-
-  @override
   void filterMenuAction(FilterEnum filterEnum) =>
       _$filterMenuActionEvent.add(filterEnum);
+
+  @override
+  void navigateToPage(NavigationParams navigationParams) =>
+      _$navigateToPageEvent.add(navigationParams);
 
   @override
   Stream<Result<List<TodoEntity>>> get todosList => _todosListState;
@@ -73,8 +73,8 @@ abstract class $TodosListBloc extends RxBlocBase
   @override
   void dispose() {
     _$fetchTodosListEvent.close();
-    _$navigateToPageEvent.close();
     _$filterMenuActionEvent.close();
+    _$navigateToPageEvent.close();
     _compositeSubscription.dispose();
     super.dispose();
   }

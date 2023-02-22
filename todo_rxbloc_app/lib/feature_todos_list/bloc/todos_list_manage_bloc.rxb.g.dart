@@ -31,6 +31,16 @@ abstract class $TodosListManageBloc extends RxBlocBase
   /// Тhe [Subject] where events sink to by calling [deleteTodo]
   final _$deleteTodoEvent = PublishSubject<TodoEntity>();
 
+  /// Тhe [Subject] where events sink to by calling [getTodosList]
+  final _$getTodosListEvent = PublishSubject<void>();
+
+  /// Тhe [Subject] where events sink to by calling [markAll]
+  final _$markAllEvent =
+      BehaviorSubject<OptionsMenuEnum>.seeded(OptionsMenuEnum.markAllComplete);
+
+  /// Тhe [Subject] where events sink to by calling [deleteMarked]
+  final _$deleteMarkedEvent = PublishSubject<void>();
+
   /// The state of [todoDeleted] implemented in [_mapToTodoDeletedState]
   late final Stream<TodoEntity> _todoDeletedState = _mapToTodoDeletedState();
 
@@ -40,6 +50,20 @@ abstract class $TodosListManageBloc extends RxBlocBase
 
   /// The state of [todoAdded] implemented in [_mapToTodoAddedState]
   late final ConnectableStream<void> _todoAddedState = _mapToTodoAddedState();
+
+  /// The state of [todosList] implemented in [_mapToTodosListState]
+  late final ConnectableStream<List<TodoEntity>> _todosListState =
+      _mapToTodosListState();
+
+  /// The state of [markTodosComplete] implemented in
+  /// [_mapToMarkTodosCompleteState]
+  late final Stream<OptionsMenuEnum> _markTodosCompleteState =
+      _mapToMarkTodosCompleteState();
+
+  /// The state of [deleteMarkedTodos] implemented in
+  /// [_mapToDeleteMarkedTodosState]
+  late final ConnectableStream<void> _deleteMarkedTodosState =
+      _mapToDeleteMarkedTodosState();
 
   /// The state of [isLoading] implemented in [_mapToIsLoadingState]
   late final Stream<bool> _isLoadingState = _mapToIsLoadingState();
@@ -57,6 +81,15 @@ abstract class $TodosListManageBloc extends RxBlocBase
   void deleteTodo(TodoEntity todo) => _$deleteTodoEvent.add(todo);
 
   @override
+  void getTodosList() => _$getTodosListEvent.add(null);
+
+  @override
+  void markAll(OptionsMenuEnum option) => _$markAllEvent.add(option);
+
+  @override
+  void deleteMarked() => _$deleteMarkedEvent.add(null);
+
+  @override
   Stream<TodoEntity> get todoDeleted => _todoDeletedState;
 
   @override
@@ -64,6 +97,15 @@ abstract class $TodosListManageBloc extends RxBlocBase
 
   @override
   ConnectableStream<void> get todoAdded => _todoAddedState;
+
+  @override
+  ConnectableStream<List<TodoEntity>> get todosList => _todosListState;
+
+  @override
+  Stream<OptionsMenuEnum> get markTodosComplete => _markTodosCompleteState;
+
+  @override
+  ConnectableStream<void> get deleteMarkedTodos => _deleteMarkedTodosState;
 
   @override
   Stream<bool> get isLoading => _isLoadingState;
@@ -76,6 +118,12 @@ abstract class $TodosListManageBloc extends RxBlocBase
   ConnectableStream<void> _mapToTodoUpdatedState();
 
   ConnectableStream<void> _mapToTodoAddedState();
+
+  ConnectableStream<List<TodoEntity>> _mapToTodosListState();
+
+  Stream<OptionsMenuEnum> _mapToMarkTodosCompleteState();
+
+  ConnectableStream<void> _mapToDeleteMarkedTodosState();
 
   Stream<bool> _mapToIsLoadingState();
 
@@ -92,6 +140,9 @@ abstract class $TodosListManageBloc extends RxBlocBase
     _$addTodoEvent.close();
     _$updateTodoEvent.close();
     _$deleteTodoEvent.close();
+    _$getTodosListEvent.close();
+    _$markAllEvent.close();
+    _$deleteMarkedEvent.close();
     _compositeSubscription.dispose();
     super.dispose();
   }
