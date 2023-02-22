@@ -61,14 +61,20 @@ class TodosListManageBloc extends $TodosListManageBloc {
       .switchMap((value) => todoService
           .deleteMarkedTodos(
               value.where((element) => element.complete == true).toList())
-          .asStream())
+          .asResultStream()
+          .setResultStateHandler(this)
+          .whereSuccess())
       .publish();
 
   @override
   ConnectableStream<List<TodoEntity>> _mapToTodosListState() =>
       _$getTodosListEvent
           .startWith(null)
-          .switchMap((value) => todoService.getTodos(FilterEnum.showAll))
+          .switchMap((value) => todoService
+              .getTodos(FilterEnum.showAll)
+              .asResultStream()
+              .setResultStateHandler(this)
+              .whereSuccess())
           .publishReplay(maxSize: 1);
 
   @override
@@ -121,10 +127,13 @@ class TodosListManageBloc extends $TodosListManageBloc {
                 todosList,
                 (menu, _, todos) => ReturnValues(todos, menu))
             .switchMap(
-              (value) =>
-                  todoService.markAllTodos(value.todos, value.menu).asStream(),
+              (value) => todoService
+                  .markAllTodos(value.todos, value.menu)
+                  .asResultStream()
+                  .setResultStateHandler(this)
+                  .whereSuccess(),
             )
-      ]).asResultStream().setResultStateHandler(this).whereSuccess();
+      ]);
 }
 
 class ReturnValues {
