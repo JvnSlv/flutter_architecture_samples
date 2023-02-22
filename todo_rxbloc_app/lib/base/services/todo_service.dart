@@ -9,7 +9,7 @@ class TodoService {
   Future<TodoEntity> updateTodo(TodoEntity todoEntity) =>
       _repository.updateTodo(todoEntity).then((value) => todoEntity);
 
-  Future<TodoEntity> delteTodo(TodoEntity todoEntity) =>
+  Future<TodoEntity> deleteTodo(TodoEntity todoEntity) =>
       _repository.deleteTodo([todoEntity.id]).then((value) => todoEntity);
 
   Future<void> addTodo(TodoEntity todoEntity) =>
