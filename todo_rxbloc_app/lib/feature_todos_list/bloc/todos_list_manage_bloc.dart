@@ -4,6 +4,7 @@ import 'package:todos_repository_core/todos_repository_core.dart';
 
 import '../../base/common_blocs/coordinator_bloc.dart';
 import '../../base/enums/current_page_enum.dart';
+import '../../base/enums/filter_enum.dart';
 import '../../base/enums/options_menu_enum.dart';
 import '../../base/models/navigation_parameters.dart';
 import '../../base/services/todo_service.dart';
@@ -29,6 +30,7 @@ abstract class TodosListManageBlocStates {
   Stream<TodoEntity> get todoDeleted;
   ConnectableStream<void> get todoUpdated;
   ConnectableStream<void> get todoAdded;
+
   ConnectableStream<List<TodoEntity>> get todosList;
   Stream<OptionsMenuEnum> get markTodosComplete;
   ConnectableStream<void> get deleteMarkedTodos;
@@ -46,10 +48,8 @@ class TodosListManageBloc extends $TodosListManageBloc {
     required this.coordinatorBloc,
     required this.todoService,
   }) {
-    todosList.connect().addTo(_compositeSubscription);
     todoUpdated.connect().addTo(_compositeSubscription);
     todoAdded.connect().addTo(_compositeSubscription);
-    deleteMarkedTodos.connect().addTo(_compositeSubscription);
     coordinatorBloc.states.todoDeleted
         .bind(_$deleteTodoEvent)
         .addTo(_compositeSubscription);
@@ -68,7 +68,7 @@ class TodosListManageBloc extends $TodosListManageBloc {
   ConnectableStream<List<TodoEntity>> _mapToTodosListState() =>
       _$getTodosListEvent
           .startWith(null)
-          .switchMap((value) => todoService.getTodos())
+          .switchMap((value) => todoService.getTodos(FilterEnum.showAll))
           .publishReplay(maxSize: 1);
 
   @override

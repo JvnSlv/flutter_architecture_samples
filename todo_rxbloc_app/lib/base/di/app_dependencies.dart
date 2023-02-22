@@ -14,6 +14,7 @@ import 'package:todos_repository_local_storage/todos_repository_local_storage.da
 import 'package:uuid/uuid.dart';
 
 import '../../feature_homepage/bloc/navigation_bloc.dart';
+import '../../feature_homepage/bloc/todos_manage_bloc.dart';
 import '../app/config/environment_config.dart';
 import '../common_blocs/coordinator_bloc.dart';
 import '../routers/router.dart';
@@ -97,6 +98,11 @@ class AppDependencies {
         RxBlocProvider<NavigationBlocType>(
           create: (context) => NavigationBloc(
             router: goRouter,
+          ),
+        ),
+        RxBlocProvider<TodosManageBlocType>(
+          create: (context) => TodosManageBloc(
+            context.read(),
           ),
         ),
       ];

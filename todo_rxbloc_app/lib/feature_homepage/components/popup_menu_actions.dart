@@ -4,17 +4,17 @@ import 'package:todos_repository_core/todos_repository_core.dart';
 
 import '../../app_extensions.dart';
 import '../../base/enums/options_menu_enum.dart';
-import '../bloc/todos_list_manage_bloc.dart';
+import '../bloc/todos_manage_bloc.dart';
 
 class PopupMenuActions extends StatelessWidget {
   const PopupMenuActions({super.key});
 
   @override
   Widget build(BuildContext context) =>
-      RxBlocBuilder<TodosListManageBlocType, List<TodoEntity>>(
+      RxBlocBuilder<TodosManageBlocType, List<TodoEntity>>(
         state: (bloc) => bloc.states.todosList,
         builder: (context, snap, bloc) =>
-            RxBlocBuilder<TodosListManageBlocType, OptionsMenuEnum>(
+            RxBlocBuilder<TodosManageBlocType, OptionsMenuEnum>(
           state: (bloc) => bloc.states.markTodosComplete,
           builder: (context, snapshot, bloc) => PopupMenuButton(
             icon: Icon(context.designSystem.icons.moreVertical),
@@ -34,7 +34,7 @@ class PopupMenuActions extends StatelessWidget {
               if (snap.hasData &&
                   snap.data!.any((element) => element.complete == true))
                 PopupMenuItem(
-                  onTap: () => bloc.events.deleteMarked(),
+                  onTap: () => bloc.events.deleteMarkerd(),
                   child: Text(context.l10n.featureTodosList.removeDone),
                 ),
             ],
