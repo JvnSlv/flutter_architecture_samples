@@ -8,29 +8,22 @@ import '../../app_extensions.dart';
 import '../../base/enums/new_todo_enum.dart';
 import '../bloc/manage_todo_bloc.dart';
 
-class ManageTodoPage extends StatefulWidget {
+class ManageTodoPage extends StatelessWidget {
   const ManageTodoPage({super.key, this.todo});
   final TodoEntity? todo;
 
-  @override
-  State<ManageTodoPage> createState() => _ManageTodoPageState();
-}
-
-class _ManageTodoPageState extends State<ManageTodoPage> {
-  @override
-  void initState() {
-    noteController.text = widget.todo?.note ?? '';
-    super.initState();
-  }
-
-  final TextEditingController noteController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Column(
         children: [
-          _successToastMessages(context),
+          RxBlocListener<ManageTodoBlocType, NewTodoEnum>(
+            state: (bloc) => bloc.states.newTodo,
+            listener: (context, state) {
+              _successScaffoldToast(state, context);
+            },
+          ),
           Expanded(
             child: Scaffold(
               appBar: AppBar(
@@ -49,13 +42,14 @@ class _ManageTodoPageState extends State<ManageTodoPage> {
                             RxTextFormFieldBuilder<ManageTodoBlocType>(
                               cursorBehaviour:
                                   RxTextFormFieldCursorBehaviour.preserve,
-                              state: (bloc) => bloc.states.validateTitle,
-                              showErrorState: (bloc) => bloc.states.showErrors,
+                              state: (bloc) => bloc.states.title,
+                              showErrorState: (bloc) =>
+                                  bloc.states.errorVisible,
                               onChanged: (bloc, task) => bloc.events.setTitle(
                                 task.trim(),
                               ),
                               builder: (fieldState) => TextFormField(
-                                autofocus: widget.todo == null ? true : false,
+                                autofocus: todo == null ? true : false,
                                 controller: fieldState.controller,
                                 decoration:
                                     fieldState.decoration.copyWithDecoration(
@@ -73,7 +67,7 @@ class _ManageTodoPageState extends State<ManageTodoPage> {
                                   .read<ManageTodoBlocType>()
                                   .events
                                   .setDescription(description.trim()),
-                              controller: noteController,
+                              initialValue: todo?.note ?? '',
                               decoration: InputDecoration(
                                 hintText: context.l10n.featureAddTodo.note,
                               ),
@@ -88,10 +82,10 @@ class _ManageTodoPageState extends State<ManageTodoPage> {
                       ),
               ),
               floatingActionButton: FloatingActionButton(
-                child: widget.todo != null
+                child: todo != null
                     ? Icon(context.designSystem.icons.edit)
                     : Icon(context.designSystem.icons.plusSign),
-                onPressed: () => widget.todo != null
+                onPressed: () => todo != null
                     ? context.read<ManageTodoBlocType>().events.updateTodo()
                     : context.read<ManageTodoBlocType>().events.saveTodo(),
               ),
@@ -102,38 +96,28 @@ class _ManageTodoPageState extends State<ManageTodoPage> {
     );
   }
 
-  @override
-  void dispose() {
-    noteController.dispose();
-    super.dispose();
+  void _successScaffoldToast(NewTodoEnum state, BuildContext context) {
+    switch (state) {
+      case NewTodoEnum.newTodoSuccess:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.featureAddTodo.todoCreatedSuccess),
+            duration: const Duration(seconds: 1),
+          ),
+        );
+        break;
+      case NewTodoEnum.newTodoError:
+        break;
+      case NewTodoEnum.editTodoSuccess:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              context.l10n.featureAddTodo.todoEditSuccess,
+            ),
+            duration: const Duration(seconds: 1),
+          ),
+        );
+        break;
+    }
   }
-
-  Widget _successToastMessages(BuildContext context) =>
-      RxBlocListener<ManageTodoBlocType, NewTodoEnum>(
-        state: (bloc) => bloc.states.newTodo,
-        listener: (context, state) {
-          switch (state) {
-            case NewTodoEnum.newTodoSuccess:
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(context.l10n.featureAddTodo.todoCreatedSuccess),
-                  duration: const Duration(seconds: 1),
-                ),
-              );
-              break;
-            case NewTodoEnum.newTodoError:
-              break;
-            case NewTodoEnum.editTodoSuccess:
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    context.l10n.featureAddTodo.todoEditSuccess,
-                  ),
-                  duration: const Duration(seconds: 1),
-                ),
-              );
-              break;
-          }
-        },
-      );
 }

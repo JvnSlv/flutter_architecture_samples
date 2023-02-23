@@ -31,14 +31,14 @@ abstract class $ManageTodoBloc extends RxBlocBase
   /// Тhe [Subject] where events sink to by calling [updateTodo]
   final _$updateTodoEvent = PublishSubject<void>();
 
-  /// The state of [validateTitle] implemented in [_mapToValidateTitleState]
-  late final Stream<String> _validateTitleState = _mapToValidateTitleState();
+  /// The state of [title] implemented in [_mapToTitleState]
+  late final Stream<String> _titleState = _mapToTitleState();
 
   /// The state of [newTodo] implemented in [_mapToNewTodoState]
   late final Stream<NewTodoEnum> _newTodoState = _mapToNewTodoState();
 
-  /// The state of [getDescription] implemented in [_mapToGetDescriptionState]
-  late final Stream<String> _getDescriptionState = _mapToGetDescriptionState();
+  /// The state of [description] implemented in [_mapToDescriptionState]
+  late final Stream<String> _descriptionState = _mapToDescriptionState();
 
   /// The state of [errors] implemented in [_mapToErrorsState]
   late final Stream<String> _errorsState = _mapToErrorsState();
@@ -46,8 +46,8 @@ abstract class $ManageTodoBloc extends RxBlocBase
   /// The state of [isLoading] implemented in [_mapToIsLoadingState]
   late final Stream<bool> _isLoadingState = _mapToIsLoadingState();
 
-  /// The state of [showErrors] implemented in [_mapToShowErrorsState]
-  late final Stream<bool> _showErrorsState = _mapToShowErrorsState();
+  /// The state of [errorVisible] implemented in [_mapToErrorVisibleState]
+  late final Stream<bool> _errorVisibleState = _mapToErrorVisibleState();
 
   @override
   void setTitle(String title) => _$setTitleEvent.add(title);
@@ -63,13 +63,13 @@ abstract class $ManageTodoBloc extends RxBlocBase
   void updateTodo() => _$updateTodoEvent.add(null);
 
   @override
-  Stream<String> get validateTitle => _validateTitleState;
+  Stream<String> get title => _titleState;
 
   @override
   Stream<NewTodoEnum> get newTodo => _newTodoState;
 
   @override
-  Stream<String> get getDescription => _getDescriptionState;
+  Stream<String> get description => _descriptionState;
 
   @override
   Stream<String> get errors => _errorsState;
@@ -78,19 +78,19 @@ abstract class $ManageTodoBloc extends RxBlocBase
   Stream<bool> get isLoading => _isLoadingState;
 
   @override
-  Stream<bool> get showErrors => _showErrorsState;
+  Stream<bool> get errorVisible => _errorVisibleState;
 
-  Stream<String> _mapToValidateTitleState();
+  Stream<String> _mapToTitleState();
 
   Stream<NewTodoEnum> _mapToNewTodoState();
 
-  Stream<String> _mapToGetDescriptionState();
+  Stream<String> _mapToDescriptionState();
 
   Stream<String> _mapToErrorsState();
 
   Stream<bool> _mapToIsLoadingState();
 
-  Stream<bool> _mapToShowErrorsState();
+  Stream<bool> _mapToErrorVisibleState();
 
   @override
   ManageTodoBlocEvents get events => this;

@@ -10,18 +10,13 @@ class ManageTodoService {
   final TodoService _todoService;
   final Uuid uuid;
 
-  Future<void> createTodo(String task, String note) async {
+  Future<TodoEntity> createTodo(String task, String note) async {
     if (task.isEmpty) {
       throw Exception('Title cannot be empty');
     }
-    await _todoService.addTodo(
-      TodoEntity(
-        id: uuid.v4(),
-        task: task,
-        note: note,
-        complete: false,
-      ),
-    );
+    final todo =
+        TodoEntity(id: uuid.v4(), task: task, note: note, complete: false);
+    return await _todoService.addTodo(todo).then((value) => todo);
   }
 
   Future<TodoEntity> updateTodo(TodoEntity todo) async {

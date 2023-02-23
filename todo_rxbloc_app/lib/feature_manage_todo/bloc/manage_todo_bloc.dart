@@ -11,7 +11,6 @@ import '../../base/utils/validators/title_validator.dart' as validator;
 import '../../feature_homepage/bloc/navigation_bloc.dart';
 
 part 'manage_todo_bloc.rxb.g.dart';
-part 'manage_todo_bloc_extensions.dart';
 part 'manage_todo_bloc_models.dart';
 
 /// A contract class containing all events of the ManageTodoBloC.
@@ -26,13 +25,13 @@ abstract class ManageTodoBlocEvents {
 
 /// A contract class containing all states of the ManageTodoBloC.
 abstract class ManageTodoBlocStates {
-  Stream<String> get validateTitle;
+  Stream<String> get title;
   Stream<NewTodoEnum> get newTodo;
-  Stream<String> get getDescription;
+  Stream<String> get description;
   Stream<String> get errors;
   Stream<bool> get isLoading;
 
-  Stream<bool> get showErrors;
+  Stream<bool> get errorVisible;
 }
 
 @RxBloc()
@@ -44,8 +43,8 @@ class ManageTodoBloc extends $ManageTodoBloc {
     TodoEntity? todo,
   }) : _todo = todo {
     if (todo != null) {
-      _$setTitleEvent.add(todo.task);
-      _$setDescriptionEvent.add(todo.note);
+      setTitle(todo.task);
+      setDescription(todo.note);
     }
   }
 
@@ -55,53 +54,69 @@ class ManageTodoBloc extends $ManageTodoBloc {
   final ManageTodoService manageTodoService;
 
   @override
-  Stream<bool> _mapToShowErrorsState() => _$saveTodoEvent
-      .map((event) => true)
-      .startWith(false)
-      .shareReplay(maxSize: 1);
+  Stream<bool> _mapToErrorVisibleState() =>
+      _$saveTodoEvent.mapTo(true).startWith(false).shareReplay(maxSize: 1);
 
   @override
-  Stream<String> _mapToValidateTitleState() =>
-      _$setTitleEvent.startWith(_todo?.task ?? '').map((event) {
-        return validator.validateTitle(event);
-      }).shareReplay(maxSize: 1);
+  Stream<String> _mapToTitleState() => _$setTitleEvent
+      .startWith(_todo?.task ?? '')
+      .map((event) => validator.validateTitle(event))
+      .shareReplay(maxSize: 1);
 
   @override
   Stream<NewTodoEnum> _mapToNewTodoState() => Rx.merge([
         _$saveTodoEvent
-            .createTodo(
-          _$setTitleEvent.startWith(''),
-          _$setDescriptionEvent,
-          manageTodoService,
-        )
-            .doOnData((event) {
-          popNavigator(event, NewTodoEnum.newTodoSuccess);
-        }),
+            .withLatestFrom2<String, String, TextFieldsData>(
+              title,
+              description,
+              (_, String title, String desc) =>
+                  TextFieldsData(title: title, description: desc),
+            )
+            .switchMap(
+              (value) => manageTodoService
+                  .createTodo(value.title, value.description)
+                  .asResultStream(),
+            ),
         _$updateTodoEvent
-            .updateTodo(
-          _$setTitleEvent.startWith(''),
-          _$setDescriptionEvent,
-          _todo,
-          manageTodoService,
-          coordinatorBloc,
-        )
-            .doOnData((event) {
-          popNavigator(event, NewTodoEnum.editTodoSuccess);
-        })
-      ]).setResultStateHandler(this).whereSuccess().shareReplay(maxSize: 1);
+            .withLatestFrom2<String, String, TextFieldsData>(
+              title,
+              description,
+              (_, String title, String desc) =>
+                  TextFieldsData(title: title, description: desc),
+            )
+            .switchMap(
+              (value) => manageTodoService
+                  .updateTodo(
+                    _todo!.copyWith(
+                      note: value.description,
+                      task: value.title,
+                    ),
+                  )
+                  .asResultStream(),
+            )
+            .doOnData((event) => event.mapResult(
+                (todo) => coordinatorBloc.events.receiveUpdatedTodo(todo)))
+      ])
+          .setResultStateHandler(this)
+          .whereSuccess()
+          .doOnData((event) {
+            navigationBloc.events.navigate(
+              const NavigationParams(navigationEnum: NavigationEnum.pop),
+            );
+          })
+          .map((event) => _returnEnum(event))
+          .shareReplay(maxSize: 1);
 
-  void popNavigator(Result<NewTodoEnum> event, NewTodoEnum enumValue) {
-    event.mapResult((enumResult) {
-      if (enumResult == enumValue) {
-        navigationBloc.events.navigate(
-          const NavigationParams(navigationEnum: NavigationEnum.pop),
-        );
-      }
-    });
+  NewTodoEnum _returnEnum(TodoEntity todo) {
+    if (todo.id == _todo?.id) {
+      return NewTodoEnum.editTodoSuccess;
+    } else {
+      return NewTodoEnum.newTodoSuccess;
+    }
   }
 
   @override
-  Stream<String> _mapToGetDescriptionState() =>
+  Stream<String> _mapToDescriptionState() =>
       _$setDescriptionEvent.startWith(_todo?.note ?? '');
 
   @override
