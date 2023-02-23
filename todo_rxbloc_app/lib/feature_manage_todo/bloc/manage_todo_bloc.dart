@@ -72,17 +72,11 @@ class ManageTodoBloc extends $ManageTodoBloc {
               (_, String title, String desc) =>
                   TextFieldsData(title: title, description: desc),
             )
-            .asResultStream()
-            .whereSuccess()
             .switchMap(
               (value) => manageTodoService
                   .createTodo(value.title, value.description)
-                  .then((value) => NewTodoEnum.newTodoSuccess)
                   .asResultStream(),
-            )
-            .doOnData((event) {
-          popNavigator(event, NewTodoEnum.newTodoSuccess);
-        }),
+            ),
         _$updateTodoEvent
             .withLatestFrom2<String, String, TextFieldsData>(
               title,
@@ -90,36 +84,35 @@ class ManageTodoBloc extends $ManageTodoBloc {
               (_, String title, String desc) =>
                   TextFieldsData(title: title, description: desc),
             )
-            .asResultStream()
-            .whereSuccess()
             .switchMap(
               (value) => manageTodoService
                   .updateTodo(
-                _todo!.copyWith(
-                  note: value.description,
-                  task: value.title,
-                ),
-              )
-                  .then(
-                (value) {
-                  coordinatorBloc.events.receiveUpdatedTodo(value);
-                  return NewTodoEnum.editTodoSuccess;
-                },
-              ).asResultStream(),
+                    _todo!.copyWith(
+                      note: value.description,
+                      task: value.title,
+                    ),
+                  )
+                  .asResultStream(),
             )
-            .doOnData((event) {
-          popNavigator(event, NewTodoEnum.editTodoSuccess);
-        })
-      ]).setResultStateHandler(this).whereSuccess().shareReplay(maxSize: 1);
+            .doOnData((event) => event.mapResult(
+                (todo) => coordinatorBloc.events.receiveUpdatedTodo(todo)))
+      ])
+          .setResultStateHandler(this)
+          .whereSuccess()
+          .doOnData((event) {
+            navigationBloc.events.navigate(
+              const NavigationParams(navigationEnum: NavigationEnum.pop),
+            );
+          })
+          .map((event) => _returnEnum(event))
+          .shareReplay(maxSize: 1);
 
-  void popNavigator(Result<NewTodoEnum> event, NewTodoEnum enumValue) {
-    event.mapResult((enumResult) {
-      if (enumResult == enumValue) {
-        navigationBloc.events.navigate(
-          const NavigationParams(navigationEnum: NavigationEnum.pop),
-        );
-      }
-    });
+  NewTodoEnum _returnEnum(TodoEntity todo) {
+    if (todo.id == _todo?.id) {
+      return NewTodoEnum.editTodoSuccess;
+    } else {
+      return NewTodoEnum.newTodoSuccess;
+    }
   }
 
   @override
