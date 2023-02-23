@@ -43,7 +43,7 @@ abstract class $TodosManageBloc extends RxBlocBase
 
   /// The state of [markTodosComplete] implemented in
   /// [_mapToMarkTodosCompleteState]
-  late final Stream<OptionsMenuEnum> _markTodosCompleteState =
+  late final Stream<ReturnValues> _markTodosCompleteState =
       _mapToMarkTodosCompleteState();
 
   /// The state of [deleteMarkedTodos] implemented in
@@ -74,7 +74,7 @@ abstract class $TodosManageBloc extends RxBlocBase
   Stream<String> get errors => _errorsState;
 
   @override
-  Stream<OptionsMenuEnum> get markTodosComplete => _markTodosCompleteState;
+  Stream<ReturnValues> get markTodosComplete => _markTodosCompleteState;
 
   @override
   ConnectableStream<void> get deleteMarkedTodos => _deleteMarkedTodosState;
@@ -86,7 +86,7 @@ abstract class $TodosManageBloc extends RxBlocBase
 
   Stream<String> _mapToErrorsState();
 
-  Stream<OptionsMenuEnum> _mapToMarkTodosCompleteState();
+  Stream<ReturnValues> _mapToMarkTodosCompleteState();
 
   ConnectableStream<void> _mapToDeleteMarkedTodosState();
 

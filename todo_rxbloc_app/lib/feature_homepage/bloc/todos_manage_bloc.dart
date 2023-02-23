@@ -24,7 +24,7 @@ abstract class TodosManageBlocStates {
   Stream<bool> get isLoading;
   Stream<String> get errors;
 
-  Stream<OptionsMenuEnum> get markTodosComplete;
+  Stream<ReturnValues> get markTodosComplete;
   ConnectableStream<void> get deleteMarkedTodos;
   ConnectableStream<List<TodoEntity>> get todosList;
 }
@@ -60,15 +60,17 @@ class TodosManageBloc extends $TodosManageBloc {
           .publishReplay(maxSize: 1);
 
   @override
-  Stream<OptionsMenuEnum> _mapToMarkTodosCompleteState() => Rx.merge([
+  Stream<ReturnValues> _mapToMarkTodosCompleteState() => Rx.merge([
         Rx.combineLatest2<OptionsMenuEnum, List<TodoEntity>, ReturnValues>(
             _$markAllEvent,
             todosList,
             (menu, todos) => ReturnValues(todos, menu)).switchMap((value) {
           if (value.todos.any((element) => element.complete == false)) {
-            return Stream.value(OptionsMenuEnum.markAllIncomplete);
+            return Stream.value(
+                ReturnValues(value.todos, OptionsMenuEnum.markAllIncomplete));
           } else {
-            return Stream.value(OptionsMenuEnum.markAllComplete);
+            return Stream.value(
+                ReturnValues(value.todos, OptionsMenuEnum.markAllComplete));
           }
         }).mapToResult(),
         _$markAllEvent
@@ -79,6 +81,8 @@ class TodosManageBloc extends $TodosManageBloc {
             .switchMap(
               (value) => todoService
                   .markAllTodos(value.todos, value.menu)
+                  .asStream()
+                  .map((event) => ReturnValues(value.todos, event))
                   .asResultStream(),
             )
       ]).setResultStateHandler(this).whereSuccess();
