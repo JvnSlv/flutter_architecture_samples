@@ -34,7 +34,7 @@ class PopupMenuActions extends StatelessWidget {
               if (snap.hasData &&
                   snap.data!.any((element) => element.complete == true))
                 PopupMenuItem(
-                  onTap: () => bloc.events.deleteMarkerd(),
+                  onTap: () => bloc.events.deleteMarked(),
                   child: Text(context.l10n.featureTodosList.removeDone),
                 ),
             ],

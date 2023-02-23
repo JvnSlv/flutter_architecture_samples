@@ -32,8 +32,8 @@ abstract class $TodosManageBloc extends RxBlocBase
   final _$markAllEvent =
       BehaviorSubject<OptionsMenuEnum>.seeded(OptionsMenuEnum.markAllComplete);
 
-  /// Тhe [Subject] where events sink to by calling [deleteMarkerd]
-  final _$deleteMarkerdEvent = PublishSubject<void>();
+  /// Тhe [Subject] where events sink to by calling [deleteMarked]
+  final _$deleteMarkedEvent = PublishSubject<void>();
 
   /// The state of [isLoading] implemented in [_mapToIsLoadingState]
   late final Stream<bool> _isLoadingState = _mapToIsLoadingState();
@@ -65,7 +65,7 @@ abstract class $TodosManageBloc extends RxBlocBase
   void markAll(OptionsMenuEnum option) => _$markAllEvent.add(option);
 
   @override
-  void deleteMarkerd() => _$deleteMarkerdEvent.add(null);
+  void deleteMarked() => _$deleteMarkedEvent.add(null);
 
   @override
   Stream<bool> get isLoading => _isLoadingState;
@@ -103,7 +103,7 @@ abstract class $TodosManageBloc extends RxBlocBase
     _$fetchDataEvent.close();
     _$getTodosListEvent.close();
     _$markAllEvent.close();
-    _$deleteMarkerdEvent.close();
+    _$deleteMarkedEvent.close();
     _compositeSubscription.dispose();
     super.dispose();
   }

@@ -28,28 +28,32 @@ class StatsPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
+                  padding: EdgeInsets.only(
+                      bottom: context.designSystem.spacing.space8),
                   child: Text(
                     context.l10n.featureStats.completedTodos,
                     style: Theme.of(context).textTheme.headline6,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 24.0),
+                  padding: EdgeInsets.only(
+                      bottom: context.designSystem.spacing.space24),
                   child: Text(
                     snapshot.completedTodos.toString(),
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
+                  padding: EdgeInsets.only(
+                      bottom: context.designSystem.spacing.space8),
                   child: Text(
                     context.l10n.featureStats.activeTodos,
                     style: Theme.of(context).textTheme.headline6,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 24.0),
+                  padding: EdgeInsets.only(
+                      bottom: context.designSystem.spacing.space24),
                   child: Text(
                     snapshot.activeTodos.toString(),
                     style: Theme.of(context).textTheme.subtitle1,

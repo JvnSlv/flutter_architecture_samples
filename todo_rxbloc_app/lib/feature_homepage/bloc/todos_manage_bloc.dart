@@ -16,7 +16,7 @@ abstract class TodosManageBlocEvents {
   @RxBlocEvent(
       type: RxBlocEventType.behaviour, seed: OptionsMenuEnum.markAllComplete)
   void markAll(OptionsMenuEnum option);
-  void deleteMarkerd();
+  void deleteMarked();
 }
 
 /// A contract class containing all states of the TodosManageBloC.
@@ -38,22 +38,25 @@ class TodosManageBloc extends $TodosManageBloc {
     todosList.connect().addTo(_compositeSubscription);
   }
   @override
-  ConnectableStream<void> _mapToDeleteMarkedTodosState() => _$deleteMarkerdEvent
+  ConnectableStream<void> _mapToDeleteMarkedTodosState() => _$deleteMarkedEvent
       .withLatestFrom<List<TodoEntity>, List<TodoEntity>>(
           todosList, (_, todos) => todos)
       .switchMap((value) => todoService
           .deleteMarkedTodos(
               value.where((element) => element.complete == true).toList())
-          .asStream())
+          .asResultStream())
+      .setResultStateHandler(this)
+      .whereSuccess()
       .publish();
 
   @override
   ConnectableStream<List<TodoEntity>> _mapToTodosListState() =>
       _$getTodosListEvent
           .startWith(null)
-          .switchMap((value) => todoService.getTodos(FilterEnum.showAll))
-          .shareReplay(maxSize: 1)
-          .asBroadcastStream()
+          .switchMap((value) =>
+              todoService.getTodos(FilterEnum.showAll).asResultStream())
+          .setResultStateHandler(this)
+          .whereSuccess()
           .publishReplay(maxSize: 1);
 
   @override
@@ -67,17 +70,19 @@ class TodosManageBloc extends $TodosManageBloc {
           } else {
             return Stream.value(OptionsMenuEnum.markAllComplete);
           }
-        }),
+        }).mapToResult(),
         _$markAllEvent
             .withLatestFrom2<OptionsMenuEnum, List<TodoEntity>, ReturnValues>(
                 _$markAllEvent,
                 todosList,
                 (menu, _, todos) => ReturnValues(todos, menu))
             .switchMap(
-              (value) =>
-                  todoService.markAllTodos(value.todos, value.menu).asStream(),
+              (value) => todoService
+                  .markAllTodos(value.todos, value.menu)
+                  .asResultStream(),
             )
-      ]).asResultStream().setResultStateHandler(this).whereSuccess();
+      ]).setResultStateHandler(this).whereSuccess();
+
   @override
   Stream<String> _mapToErrorsState() =>
       errorState.map((error) => error.toString());
