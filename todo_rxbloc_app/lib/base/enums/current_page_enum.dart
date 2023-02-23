@@ -1,5 +1,5 @@
 enum NavigationEnum {
-  todosList,
+  list,
   stats,
   addTodo,
   todoDetails,

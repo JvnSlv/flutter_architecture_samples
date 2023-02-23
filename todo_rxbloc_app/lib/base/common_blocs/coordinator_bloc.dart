@@ -7,17 +7,34 @@
 
 import 'package:rx_bloc/rx_bloc.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:todos_repository_core/todos_repository_core.dart';
 
 part 'coordinator_bloc.rxb.g.dart';
 part 'coordinator_bloc_extensions.dart';
 
-abstract class CoordinatorEvents {}
+abstract class CoordinatorEvents {
+  void deleteTodo(TodoEntity todo);
+  void updateTodo(TodoEntity todo);
+  void receiveUpdatedTodo(TodoEntity todo);
+}
 
-abstract class CoordinatorStates {}
+abstract class CoordinatorStates {
+  Stream<TodoEntity> get todoDeleted;
+  Stream<TodoEntity> get todoUpdated;
+  Stream<TodoEntity> get sendUpdatedTodo;
+}
 
 /// The coordinator bloc manages the communication between blocs.
 ///
 /// The goals is to keep all blocs decoupled from each other
 /// as the entire communication flow goes through this bloc.
 @RxBloc()
-class CoordinatorBloc extends $CoordinatorBloc {}
+class CoordinatorBloc extends $CoordinatorBloc {
+  @override
+  Stream<TodoEntity> _mapToTodoDeletedState() => _$deleteTodoEvent;
+  @override
+  Stream<TodoEntity> _mapToTodoUpdatedState() => _$updateTodoEvent;
+
+  @override
+  Stream<TodoEntity> _mapToSendUpdatedTodoState() => _$receiveUpdatedTodoEvent;
+}

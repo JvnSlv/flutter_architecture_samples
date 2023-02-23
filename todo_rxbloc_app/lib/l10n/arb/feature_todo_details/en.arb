@@ -1,0 +1,11 @@
+{
+  "@@locale": "en",
+  "todoDetailsAppBarTitle": "Todo Details",
+  "@todoDetailsAppBarTitle": {
+    "description": "Todo Details"
+  },
+  "todoDetails":"Todo Details",
+  "successDelete":"deleted successfully",
+  "undo":"Undo",
+  "delete":"Delete"
+}

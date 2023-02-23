@@ -5,90 +5,111 @@ import 'package:todos_repository_core/todos_repository_core.dart';
 
 import '../../app_extensions.dart';
 import '../../base/enums/current_page_enum.dart';
-import '../../base/models/navigation_parametars.dart';
+import '../../base/models/navigation_parameters.dart';
+import '../../feature_homepage/components/popup_menu_actions.dart';
 import '../bloc/todos_list_bloc.dart';
 import '../bloc/todos_list_manage_bloc.dart';
+import '../components/filter_menu_actions.dart';
 import '../components/todo_list_tile.dart';
 
 class TodosListPage extends StatelessWidget {
   const TodosListPage({super.key});
 
   @override
-  Widget build(BuildContext context) => _buildDeleteToastMessage(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(context.l10n.featureTodosList.todosListAppBarTitle),
+  Widget build(BuildContext context) => Column(
+        children: [
+          RxBlocListener<TodosListManageBlocType, String>(
+            state: (bloc) => bloc.states.errors,
+            listener: (context, state) {
+              _editScaffoldToast(context, state);
+            },
           ),
-          body: RxResultBuilder<TodosListBlocType, List<TodoEntity>>(
-            state: (bloc) => bloc.states.todosList,
-            buildError: (context, exception, bloc) => Center(
-              child: Text(
-                exception.toString(),
+          RxBlocListener<TodosListManageBlocType, TodoEntity>(
+            state: (bloc) => bloc.states.todoDeleted,
+            listener: (context, todo) {
+              _deleteScaffoldToast(context, todo);
+            },
+          ),
+          Expanded(
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text(context.l10n.featureTodosList.todosListAppBarTitle),
+                actions: const [FilterMenuActions(), PopupMenuActions()],
               ),
-            ),
-            buildLoading: (context, bloc) => const Center(
-              child: CircularProgressIndicator(),
-            ),
-            buildSuccess: (context, snapshot, bloc) => ListView.builder(
-              itemCount: snapshot.length,
-              itemBuilder: (context, index) => TodoListTile(
-                todoEntity: snapshot[index],
-                onTap: () => bloc.events.navigateToPage(
-                  NavigationParams(
-                    navigationEnum: NavigationEnum.todoDetails,
-                    extraParametars: snapshot[index],
+              body: RxResultBuilder<TodosListBlocType, List<TodoEntity>>(
+                state: (bloc) => bloc.states.todosList,
+                buildError: (context, exception, bloc) => Center(
+                  child: Text(
+                    exception.toString(),
                   ),
                 ),
-                onChanged: (_) => context
-                    .read<TodosListManageBlocType>()
-                    .events
-                    .updateTodo(snapshot[index]),
-                onDismissed: (direciton) =>
-                    context.read<TodosListManageBlocType>().events.deleteTodo(
+                buildLoading: (context, bloc) => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                buildSuccess: (context, snapshot, bloc) => ListView.builder(
+                  itemCount: snapshot.length,
+                  itemBuilder: (context, index) => TodoListTile(
+                    todoEntity: snapshot[index],
+                    onTap: () => bloc.events.navigateToPage(
+                      NavigationParams(
+                        navigationEnum: NavigationEnum.todoDetails,
+                        extraParams: snapshot[index],
+                      ),
+                    ),
+                    onChanged: (_) => context
+                        .read<TodosListManageBlocType>()
+                        .events
+                        .updateTodo(snapshot[index]),
+                    onDismissed: (direction) => context
+                        .read<TodosListManageBlocType>()
+                        .events
+                        .deleteTodo(
                           snapshot[index],
                         ),
+                  ),
+                ),
+              ),
+              floatingActionButton:
+                  RxBlocBuilder<TodosListBlocType, NavigationParams>(
+                state: (bloc) => bloc.states.navigate,
+                builder: (context, snapshot, bloc) => FloatingActionButton(
+                  child: Icon(context.designSystem.icons.plusSign),
+                  onPressed: () => bloc.events.navigateToPage(
+                    const NavigationParams(
+                        navigationEnum: NavigationEnum.addTodo),
+                  ),
+                ),
               ),
             ),
           ),
-          floatingActionButton:
-              RxBlocBuilder<TodosListBlocType, NavigationParams>(
-            state: (bloc) => bloc.states.navigate,
-            builder: (context, snapshot, bloc) => FloatingActionButton(
-              child: Icon(context.designSystem.icons.plusSign),
-              onPressed: () => bloc.events.navigateToPage(
-                const NavigationParams(navigationEnum: NavigationEnum.addTodo),
-              ),
-            ),
-          ),
-        ),
+        ],
       );
 }
 
-Widget _buildDeleteToastMessage({required Widget child}) =>
-    RxBlocListener<TodosListManageBlocType, TodoEntity>(
-      state: (bloc) => bloc.states.todoDeleted,
-      listener: (context, todo) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                    '${todo.task}  ${context.l10n.featureTodosList.successDelete}'),
-                GestureDetector(
-                  onTap: () {
-                    context
-                        .read<TodosListManageBlocType>()
-                        .events
-                        .addTodo(todo);
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                  },
-                  child: Text(context.l10n.featureTodosList.undo),
-                )
-              ],
-            ),
-          ),
-        );
-      },
-      child: child,
-    );
+void _editScaffoldToast(BuildContext context, String state) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(state),
+    ),
+  );
+}
+
+void _deleteScaffoldToast(BuildContext context, TodoEntity todo) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('${todo.task}  ${context.l10n.featureTodosList.successDelete}'),
+          GestureDetector(
+            onTap: () {
+              context.read<TodosListManageBlocType>().events.addTodo(todo);
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
+            child: Text(context.l10n.featureTodosList.undo),
+          )
+        ],
+      ),
+    ),
+  );
+}

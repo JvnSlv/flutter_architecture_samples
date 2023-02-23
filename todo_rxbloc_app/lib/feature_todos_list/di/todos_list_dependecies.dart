@@ -29,8 +29,11 @@ class TodosListDependecies {
       ),
     ),
     RxBlocProvider<TodosListManageBlocType>(
-        create: (context) => TodosListManageBloc(
-              todoService: context.read(),
-            )),
+      create: (context) => TodosListManageBloc(
+        todoService: context.read(),
+        coordinatorBloc: context.read(),
+        navigationBloc: context.read(),
+      ),
+    ),
   ];
 }

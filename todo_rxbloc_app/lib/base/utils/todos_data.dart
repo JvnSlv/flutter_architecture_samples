@@ -1,6 +1,6 @@
 import 'package:todos_repository_core/todos_repository_core.dart';
 
-final List<TodoEntity> listOfTods = [
+final List<TodoEntity> listOfTodos = [
   TodoEntity(
     task: 'test 1',
     id: '1',

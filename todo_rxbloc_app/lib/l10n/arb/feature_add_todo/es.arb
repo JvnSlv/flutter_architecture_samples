@@ -11,5 +11,6 @@
   "todoDescriptionError":"Todo description cannot be empty",
   "todoCreatedSuccess":"Todo created successfully",
   "todoCreatedError":"An error occured, title must have value",
-  "emptyText":""
+  "emptyText":"",
+  "todoEditSuccess":"Todo updated successfully"
 }
