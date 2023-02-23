@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../app_extensions.dart';
 import '../../base/enums/current_page_enum.dart';
-import '../../base/models/navigation_parametars.dart';
+import '../../base/models/navigation_parameters.dart';
 import '../bloc/navigation_bloc.dart';
 
 class HomePage extends StatelessWidget {
@@ -18,7 +18,7 @@ class HomePage extends StatelessWidget {
     switch (pageIndex) {
       case 0:
         context.read<NavigationBlocType>().events.navigate(
-              const NavigationParams(navigationEnum: NavigationEnum.todosList),
+              const NavigationParams(navigationEnum: NavigationEnum.list),
             );
         break;
       case 1:
@@ -38,9 +38,9 @@ class HomePage extends StatelessWidget {
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: (snapshot.hasData
                     ? snapshot.data!.navigationEnum.index > 1
-                        ? NavigationEnum.todosList
+                        ? NavigationEnum.list
                         : snapshot.data!.navigationEnum
-                    : NavigationEnum.todosList)
+                    : NavigationEnum.list)
                 .index,
             selectedItemColor: Theme.of(context).colorScheme.secondary,
             onTap: (pageIndex) => _onTap(context, pageIndex),

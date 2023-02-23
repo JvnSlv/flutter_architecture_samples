@@ -22,16 +22,46 @@ abstract class $CoordinatorBloc extends RxBlocBase
   /// Тhe [Subject] where events sink to by calling [deleteTodo]
   final _$deleteTodoEvent = PublishSubject<TodoEntity>();
 
-  /// The state of [deletedTodo] implemented in [_mapToDeletedTodoState]
-  late final Stream<TodoEntity> _deletedTodoState = _mapToDeletedTodoState();
+  /// Тhe [Subject] where events sink to by calling [updateTodo]
+  final _$updateTodoEvent = PublishSubject<TodoEntity>();
+
+  /// Тhe [Subject] where events sink to by calling [receiveUpdatedTodo]
+  final _$receiveUpdatedTodoEvent = PublishSubject<TodoEntity>();
+
+  /// The state of [todoDeleted] implemented in [_mapToTodoDeletedState]
+  late final Stream<TodoEntity> _todoDeletedState = _mapToTodoDeletedState();
+
+  /// The state of [todoUpdated] implemented in [_mapToTodoUpdatedState]
+  late final Stream<TodoEntity> _todoUpdatedState = _mapToTodoUpdatedState();
+
+  /// The state of [sendUpdatedTodo] implemented in [_mapToSendUpdatedTodoState]
+  late final Stream<TodoEntity> _sendUpdatedTodoState =
+      _mapToSendUpdatedTodoState();
 
   @override
   void deleteTodo(TodoEntity todo) => _$deleteTodoEvent.add(todo);
 
   @override
-  Stream<TodoEntity> get deletedTodo => _deletedTodoState;
+  void updateTodo(TodoEntity todo) => _$updateTodoEvent.add(todo);
 
-  Stream<TodoEntity> _mapToDeletedTodoState();
+  @override
+  void receiveUpdatedTodo(TodoEntity todo) =>
+      _$receiveUpdatedTodoEvent.add(todo);
+
+  @override
+  Stream<TodoEntity> get todoDeleted => _todoDeletedState;
+
+  @override
+  Stream<TodoEntity> get todoUpdated => _todoUpdatedState;
+
+  @override
+  Stream<TodoEntity> get sendUpdatedTodo => _sendUpdatedTodoState;
+
+  Stream<TodoEntity> _mapToTodoDeletedState();
+
+  Stream<TodoEntity> _mapToTodoUpdatedState();
+
+  Stream<TodoEntity> _mapToSendUpdatedTodoState();
 
   @override
   CoordinatorEvents get events => this;
@@ -42,6 +72,8 @@ abstract class $CoordinatorBloc extends RxBlocBase
   @override
   void dispose() {
     _$deleteTodoEvent.close();
+    _$updateTodoEvent.close();
+    _$receiveUpdatedTodoEvent.close();
     _compositeSubscription.dispose();
     super.dispose();
   }

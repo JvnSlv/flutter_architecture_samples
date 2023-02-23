@@ -27,8 +27,8 @@ abstract class $NavigationBloc extends RxBlocBase
       _mapToGetPageIndexState();
 
   @override
-  void navigate(NavigationParams navigationParametars) =>
-      _$navigateEvent.add(navigationParametars);
+  void navigate(NavigationParams navigationParams) =>
+      _$navigateEvent.add(navigationParams);
 
   @override
   Stream<NavigationParams> get getPageIndex => _getPageIndexState;

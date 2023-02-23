@@ -5,7 +5,7 @@ import 'package:todos_repository_core/todos_repository_core.dart';
 
 import '../../app_extensions.dart';
 import '../../base/enums/current_page_enum.dart';
-import '../../base/models/navigation_parametars.dart';
+import '../../base/models/navigation_parameters.dart';
 import '../../feature_homepage/bloc/navigation_bloc.dart';
 import '../blocs/todo_details_bloc.dart';
 
@@ -15,47 +15,45 @@ class TodoDetailsPage extends StatelessWidget {
   final String id;
 
   @override
-  Widget build(BuildContext context) =>
-      RxBlocListener<TodoDetailsBlocType, String>(
-        state: (bloc) => bloc.states.errors,
-        listener: (context, state) =>
-            ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(state),
-          ),
-        ),
-        child: Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: Text(context.l10n.featureTodoDetails.todoDetailsAppBarTitle),
-            actions: [
-              IconButton(
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(context.l10n.featureTodoDetails.todoDetailsAppBarTitle),
+          actions: [
+            RxBlocBuilder<TodoDetailsBlocType, TodoEntity>(
+              state: (bloc) => bloc.states.updatedTodo,
+              builder: (context, snapshot, bloc) => IconButton(
                 icon: Icon(context.designSystem.icons.delete),
-                onPressed: () =>
-                    context.read<TodoDetailsBlocType>().events.deleteTodo(todo),
-              )
-            ],
-          ),
-          body: Padding(
-            padding: EdgeInsets.all(context.designSystem.spacing.space16),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                      right: context.designSystem.spacing.space8),
-                  child: RxBlocBuilder<TodoDetailsBlocType, TodoEntity>(
-                    state: (bloc) => bloc.states.updatedTodo,
-                    builder: (context, snapshot, bloc) => Checkbox(
-                      value: snapshot.data?.complete ?? todo.complete,
-                      onChanged: (value) {
-                        bloc.events.toggleTodo(todo, value!);
-                      },
-                    ),
+                onPressed: () => context
+                    .read<TodoDetailsBlocType>()
+                    .events
+                    .deleteTodo(snapshot.data ?? todo),
+              ),
+            )
+          ],
+        ),
+        body: Padding(
+          padding: EdgeInsets.all(context.designSystem.spacing.space16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding:
+                    EdgeInsets.only(right: context.designSystem.spacing.space8),
+                child: RxBlocBuilder<TodoDetailsBlocType, TodoEntity>(
+                  state: (bloc) => bloc.states.updatedTodo,
+                  builder: (context, snapshot, bloc) => Checkbox(
+                    value: snapshot.data?.complete ?? todo.complete,
+                    onChanged: (value) {
+                      bloc.events.toggleTodo(snapshot.data ?? todo, value!);
+                    },
                   ),
                 ),
-                Expanded(
-                  child: Column(
+              ),
+              Expanded(
+                child: RxBlocBuilder<TodoDetailsBlocType, TodoEntity>(
+                  state: (bloc) => bloc.states.updatedTodo,
+                  builder: (context, snapshot, bloc) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
@@ -64,35 +62,31 @@ class TodoDetailsPage extends StatelessWidget {
                           bottom: context.designSystem.spacing.space16,
                         ),
                         child: Text(
-                          todo.task,
+                          snapshot.data?.task ?? todo.task,
                           style: Theme.of(context).textTheme.headline5,
                         ),
                       ),
                       Text(
-                        todo.note,
+                        snapshot.data?.note ?? todo.note,
                         style: Theme.of(context).textTheme.subtitle1,
                       )
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          floatingActionButton: RxBlocBuilder<TodoDetailsBlocType, bool>(
-            state: (bloc) => bloc.states.isLoading,
-            builder: (context, snapshot, bloc) =>
-                (snapshot.hasData && snapshot.data == false)
-                    ? FloatingActionButton(
-                        onPressed: () =>
-                            context.read<NavigationBlocType>().events.navigate(
-                                  NavigationParams(
-                                    navigationEnum: NavigationEnum.addTodo,
-                                    extraParametars: todo,
-                                  ),
-                                ),
-                        child: Icon(context.designSystem.icons.edit),
-                      )
-                    : const SizedBox(),
+        ),
+        floatingActionButton: RxBlocBuilder<TodoDetailsBlocType, TodoEntity>(
+          state: (bloc) => bloc.states.updatedTodo,
+          builder: (context, snapshot, bloc) => FloatingActionButton(
+            onPressed: () => context.read<NavigationBlocType>().events.navigate(
+                  NavigationParams(
+                    navigationEnum: NavigationEnum.addTodo,
+                    extraParams: snapshot.data ?? todo,
+                  ),
+                ),
+            child: Icon(context.designSystem.icons.edit),
           ),
         ),
       );
