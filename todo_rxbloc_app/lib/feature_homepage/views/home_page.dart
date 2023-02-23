@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../app_extensions.dart';
 import '../../base/enums/current_page_enum.dart';
-import '../../base/models/navigation_parametars.dart';
+import '../../base/models/navigation_parameters.dart';
 import '../bloc/navigation_bloc.dart';
 
 class HomePage extends StatelessWidget {

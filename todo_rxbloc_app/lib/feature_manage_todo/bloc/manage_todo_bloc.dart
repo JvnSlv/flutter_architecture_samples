@@ -5,7 +5,7 @@ import 'package:todos_repository_core/todos_repository_core.dart';
 import '../../base/common_blocs/coordinator_bloc.dart';
 import '../../base/enums/current_page_enum.dart';
 import '../../base/enums/new_todo_enum.dart';
-import '../../base/models/navigation_parametars.dart';
+import '../../base/models/navigation_parameters.dart';
 import '../../base/services/manage_todo_service.dart';
 import '../../base/utils/validators/title_validator.dart' as validator;
 import '../../feature_homepage/bloc/navigation_bloc.dart';

@@ -32,4 +32,8 @@ class DesignSystemIcons {
   final edit = Icons.edit;
 
   final delete = Icons.delete;
+
+  final moreVertical = Icons.more_vert;
+
+  final filter = Icons.filter_list;
 }

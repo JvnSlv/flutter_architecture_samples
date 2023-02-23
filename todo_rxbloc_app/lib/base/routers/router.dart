@@ -9,9 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:todos_repository_core/todos_repository_core.dart';
+
 import '../../feature_homepage/views/home_page.dart';
 import '../../feature_manage_todo/di/manage_todo_dependecies.dart';
 import '../../feature_manage_todo/views/manage_todo.dart';
+import '../../feature_stats/di/stats_dependecies.dart';
 import '../../feature_stats/views/stats_page.dart';
 import '../../feature_todo_details/di/todo_details_dependecies.dart';
 import '../../feature_todo_details/views/todo_details_page.dart';
@@ -102,7 +104,10 @@ class StatsRoute extends GoRouteData {
   const StatsRoute();
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      const NoTransitionPage(
-        child: StatsPage(),
+      NoTransitionPage(
+        child: MultiProvider(
+          providers: StatsDependecies.from(context).providers,
+          child: const StatsPage(),
+        ),
       );
 }
